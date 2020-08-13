@@ -1,0 +1,43 @@
+{
+  "type": "datasource",
+  "name": "ClickHouse",
+  "id": "wombyte-clickhouse-datasource",
+
+  "metrics": true,
+  "annotations": true,
+  "alerting": true,
+  "backend": true,
+
+  "category": "tsdb",
+
+  "executable": "plugin",
+
+  "info": {
+    "description": "Clickhouse plugin for Grafana",
+    "author": {
+      "name": "Valeria Kononenko",
+      "url": "https://github.com/valeriakononenko"
+    },
+    "keywords": [
+      "clickhouse",
+      "datasource",
+      "alerting"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "License",
+        "url": "https://www.apache.org/licenses/LICENSE-2.0"
+      }
+    ],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaVersion": "7.x.x",
+    "plugins": []
+  }
+}

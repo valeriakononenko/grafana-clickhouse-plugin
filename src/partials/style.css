@@ -1,0 +1,13 @@
+
+.query-field-label {
+    height: 64px;
+}
+
+.query-options {
+    margin-left: 4px;
+    width: 100%;
+}
+
+.query-options-switch {
+    padding: 10px 8px;
+}
