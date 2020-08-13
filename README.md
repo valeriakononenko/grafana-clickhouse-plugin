@@ -1,6 +1,4 @@
-# Grafana Data Source Plugin Template
-
-[![CircleCI](https://circleci.com/gh/grafana/simple-datasource/tree/master.svg?style=svg)](https://circleci.com/gh/grafana/simple-datasource/tree/master)
+# Grafana Data Source Plugin for ClickHouse datasource with alerting
 
 ## Getting started
 
