@@ -1,4 +1,6 @@
-# Grafana Data Source Plugin for ClickHouse datasource with alerting
+# Grafana ClickHouse Data Source Plugin
+
+Supports alerting
 
 ## Getting started
 
