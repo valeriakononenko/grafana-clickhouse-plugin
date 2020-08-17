@@ -27,7 +27,7 @@ Supports alerting
    
 5. Use unsigned
     ```
-    sudo sed -i "s/#allow_loading_unsigned_plugins/;allow_loading_unsigned_plugins/" /etc/grafana/grafana.ini
+    sudo sed -i "s/;allow_loading_unsigned_plugins/allow_loading_unsigned_plugins/" /etc/grafana/grafana.ini
     sudo sed -c -i "s/\(allow_loading_unsigned_plugins *= *\).*/\1wombyte-clickhouse-datasource/" /etc/grafana/grafana.ini
     sudo systemctl restart grafana-server.service 
     ```

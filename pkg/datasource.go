@@ -47,6 +47,7 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	frames := NewFrames(query, res)
 
+	// TODO use frames size
 	response := backend.DataResponse{
 		Frames: make([]*data.Frame, 0),
 	}

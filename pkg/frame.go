@@ -21,6 +21,7 @@ func NewFrames(query *Query, response *Response) []*ClickHouseFrame {
 }
 
 func NewFrame(refId string, name string, fieldsMeta []*FieldMeta, data []map[string]interface{}) *ClickHouseFrame {
+  // TODO use fieldsMeta to define fields size for better performance
   fields:= make([]*ClickHouseField, 0)
 
   for _, meta := range fieldsMeta {

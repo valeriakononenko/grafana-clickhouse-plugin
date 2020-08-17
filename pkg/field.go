@@ -15,6 +15,7 @@ import (
 var dateLayout = "2006-01-02"
 var dateTimeLayout = dateLayout + " 15:04:05"
 
+// TODO use (value, struct) to return result
 func parseValue(valueType string, value interface{}, fieldName string) (interface{}, *data.Field, float64, error)  {
   parseFloatValue := func(value interface{}) (*float64, *data.Field, float64, error)  {
     if value != nil {
@@ -60,6 +61,7 @@ func parseValue(valueType string, value interface{}, fieldName string) (interfac
 	}
   }
 
+  // TODO pass layout as second arg - separate from valueType
   parseTime := func(value interface{}) (*time.Time, *data.Field, float64, error)  {
 	layout := dateLayout
 	if valueType == "DateTime" {

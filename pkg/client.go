@@ -14,6 +14,8 @@ type ClickHouseClient struct {
 	settings *DatasourceSettings
 }
 
+// TODO add https support
+// TODO (minor) send query via post
 func (client *ClickHouseClient) Query(query string) (*Response, error) {
 
 	onErr := func(err error) (*Response, error) {
