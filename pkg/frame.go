@@ -16,16 +16,17 @@ func NewFrames(query *Query, response *Response) []*ClickHouseFrame {
   if query.SplitTS {
 	return splitFrame(query.RefId, response.Meta, response.Data)
   } else {
-	return []*ClickHouseFrame{NewFrame(query.RefId, query.RefId, response.Meta, response.Data)}
+    frame := NewFrame(query.RefId, query.RefId, response.Meta)
+    frame.SetData(response.Data)
+	return []*ClickHouseFrame{frame}
   }
 }
 
-func NewFrame(refId string, name string, fieldsMeta []*FieldMeta, data []map[string]interface{}) *ClickHouseFrame {
-  // TODO use fieldsMeta to define fields size for better performance
-  fields:= make([]*ClickHouseField, 0)
+func NewFrame(refId string, name string, fieldsMeta []*FieldMeta) *ClickHouseFrame {
+  fields:= make([]*ClickHouseField, len(fieldsMeta))
 
-  for _, meta := range fieldsMeta {
-	fields = append(fields, NewField(meta.Name, meta.Type))
+  for i, meta := range fieldsMeta {
+	fields[i] = NewField(meta.Name, meta.Type)
   }
 
   frame := &ClickHouseFrame{
@@ -33,8 +34,6 @@ func NewFrame(refId string, name string, fieldsMeta []*FieldMeta, data []map[str
 	Name: name,
 	Fields: fields,
   }
-
-  frame.SetData(data)
 
   return frame
 }
@@ -67,10 +66,10 @@ func (f *ClickHouseFrame) SetData(data []map[string]interface{})  {
 }
 
 func (f *ClickHouseFrame) ToDataFrame() *data.Frame  {
-	fields := make([]*data.Field, 0)
+	fields := make([]*data.Field, len(f.Fields))
 
-	for _, f := range f.Fields {
-		fields = append(fields, f.toFrameField())
+	for i, f := range f.Fields {
+		fields[i] = f.toFrameField()
 	}
 
 	frame := &data.Frame{

@@ -70,18 +70,18 @@ func getValueMeta(fieldsMeta []*FieldMeta) *FieldMeta  {
 }
 
 func getTimeSeriesMeta(name string, fieldsMeta []*FieldMeta) []*FieldMeta  {
-  meta := make([]*FieldMeta, 0)
+  meta := make([]*FieldMeta, 2)
   valueFieldMeta := getValueMeta(fieldsMeta)
 
   if valueFieldMeta != nil {
-	meta = append(meta, &FieldMeta{
+	meta[0] = &FieldMeta{
 	  Name: name,
 	  Type: valueFieldMeta.Type,
-	})
-	meta = append(meta, &FieldMeta{
+	}
+	meta[1] = &FieldMeta{
 	  Name: SplitTimeFieldName,
 	  Type: SplitTimeFieldType,
-	})
+	}
   }
 
   return meta
@@ -91,7 +91,7 @@ func buildTimeSeriesFrame(refId string, name string, fieldsMeta []*FieldMeta) *C
   meta := getTimeSeriesMeta(name, fieldsMeta)
 
   if len(meta) == 2 {
-	return NewFrame(refId, name, meta, make([]map[string]interface{}, 0))
+	return NewFrame(refId, name, meta)
   } else {
 	return nil
   }
@@ -121,16 +121,20 @@ func splitFrame(refId string, fieldsMeta []*FieldMeta, data []map[string]interfa
 	  }
 	}
 
-	framesList := make([]*ClickHouseFrame, 0)
+	framesList := make([]*ClickHouseFrame, len(frames))
+	i := 0
 
 	for _, frame := range frames {
 	  if frame != nil {
-	    framesList = append(framesList, frame)
+	    framesList[i] = frame
 	  }
+	  i += 1
 	}
 
 	return framesList
   } else {
-    return []*ClickHouseFrame{NewFrame(refId, refId, fieldsMeta, data)}
+    frame := NewFrame(refId, refId, fieldsMeta)
+    frame.SetData(data)
+    return []*ClickHouseFrame{frame}
   }
 }
