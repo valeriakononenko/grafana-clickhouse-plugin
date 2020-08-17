@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	_ "github.com/ClickHouse/clickhouse-go"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"io/ioutil"
 	"net/http"
