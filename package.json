@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
-    "clean": "rm -rf ./dist ./wombyte* ./coverage",
+    "clean": "rm -rf ./dist ./*.zip ./coverage",
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
@@ -12,7 +12,7 @@
     "go-lnx": "GOOS=linux GOARCH=amd64 go build -i -o ./dist/plugin_linux_amd64 ./pkg",
     "go-win": "GOOS=windows GOARCH=amd64 go build -i -o ./dist/plugin_windows_amd64 ./pkg",
     "go-drw": "GOOS=darwin GOARCH=amd64 go build -i -o ./dist/plugin_darwin_amd64 ./pkg",
-    "go": "npm run go-vendor && npm run go-lnx && npm run go-win &&npm run go-drw",
+    "go": "npm run go-vendor && npm run go-lnx && npm run go-win && npm run go-drw",
     "build-all": "npm run clean && npm run build && npm run go",
     "zip": "zip -r wombyte-clickhouse-datasource.zip ./dist",
     "grafana-stop": "sudo systemctl stop grafana-server.service",

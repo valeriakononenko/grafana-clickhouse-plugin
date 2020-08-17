@@ -107,8 +107,7 @@ func splitFrame(refId string, fieldsMeta []*FieldMeta, data []map[string]interfa
 	  value, valueOk := row[SplitValueFieldName]
 
 	  if labelErr == nil && timeErr == nil && valueOk {
-	    // TODO check if refId required
-	    name := refId + "-" + label
+	    name := label
 	    newFrame, ok := frames[name]
 	    if !ok {
 	      newFrame = buildTimeSeriesFrame(refId, name, fieldsMeta)
