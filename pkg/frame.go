@@ -12,16 +12,6 @@ type ClickHouseFrame struct {
 	Fields []*ClickHouseField
 }
 
-func NewFrames(query *Query, response *Response) []*ClickHouseFrame {
-  if query.SplitTs {
-	return splitFrame(query.RefId, response.Meta, response.Data)
-  } else {
-    frame := NewFrame(query.RefId, query.RefId, response.Meta)
-    frame.SetData(response.Data)
-	return []*ClickHouseFrame{frame}
-  }
-}
-
 func NewFrame(refId string, name string, fieldsMeta []*FieldMeta) *ClickHouseFrame {
   fields:= make([]*ClickHouseField, len(fieldsMeta))
 
@@ -57,12 +47,6 @@ func (f *ClickHouseFrame) AddRow(row map[string]interface{})  {
 			backend.Logger.Warn(fmt.Sprintf("Unable to find field with name '%s', values are not added", key))
 		}
 	}
-}
-
-func (f *ClickHouseFrame) SetData(data []map[string]interface{})  {
-  for _, row := range data {
-	f.AddRow(row)
-  }
 }
 
 func (f *ClickHouseFrame) ToDataFrame() *data.Frame  {
