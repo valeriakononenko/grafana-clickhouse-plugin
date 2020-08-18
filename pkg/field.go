@@ -61,30 +61,28 @@ func parseValue(valueType string, value interface{}, fieldName string) (interfac
 	}
   }
 
-  // TODO pass layout as second arg - separate from valueType
-  parseTime := func(value interface{}) (*time.Time, *data.Field, float64, error)  {
-	layout := dateLayout
-	if valueType == "DateTime" {
-	  layout = dateTimeLayout
-	}
+  parseTime := func(value interface{}, layout string) (*time.Time, *data.Field, float64, error)  {
 	strValue := fmt.Sprintf("%v", value)
 	t, err := time.Parse(layout, strValue)
-	if err != nil {
+
+	if err == nil {
+	  return &t, data.NewField(fieldName, nil, []*time.Time{&t}), float64(t.Unix()), nil
+	} else {
 	  i64v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 64)
-	  if err != nil {
-		date, err := time.Parse(dateLayout, strValue)
-		if err != nil {
-		  return nil, nil, math.NaN(), err
-		} else {
+
+	  if err == nil {
+		timeValue := time.Unix(i64v, i64v)
+		return &timeValue, data.NewField(fieldName, nil, []*time.Time{&timeValue}), float64(i64v), nil
+	  } else {
+		date, err := time.Parse(layout, strValue)
+
+		if err == nil {
 		  return &date, data.NewField(fieldName, nil, []*time.Time{&date}), float64(date.Unix()), nil
 		}
-	  } else {
-	    timeValue := time.Unix(i64v, i64v)
-	    return &timeValue, data.NewField(fieldName, nil, []*time.Time{&timeValue}), float64(i64v), nil
 	  }
-	} else {
-	  return &t, data.NewField(fieldName, nil, []*time.Time{&t}), float64(t.Unix()), nil
 	}
+
+	return nil, nil, math.NaN(), err
   }
 
   if strings.HasPrefix(valueType, "LowCardinality") {
@@ -101,8 +99,10 @@ func parseValue(valueType string, value interface{}, fieldName string) (interfac
 	  return parseUInt64Value(value)
 	case "Int64":
 	  return parseInt64Value(value)
-	case "Date", "DateTime":
-	  return parseTime(value)
+	case "Date":
+	  return parseTime(value, dateLayout)
+	case "DateTime":
+	  return parseTime(value, dateTimeLayout)
 	default:
 	  if strings.HasPrefix(valueType, "Decimal") {
 		return parseFloatValue(value)
