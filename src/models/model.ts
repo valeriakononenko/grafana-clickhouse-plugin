@@ -13,7 +13,7 @@ export interface ClickHouseQuery extends DataQuery {
   datasourceId: number;
   query: string;
   datasource: string;
-  splitTS: boolean;
+  splitTs: boolean;
 }
 
 type ClickHouseSecureOptions = {

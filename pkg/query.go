@@ -11,8 +11,7 @@ var DefaultQuery = "SELECT 1 FORMAT JSON;"
 type Query struct {
 	RefId		string	`json:"refId"`
 	Query 		string 	`json:"query"`
-	// TODO CamelCase - splitTs
-	SplitTS		bool	`json:"splitTS"`
+	SplitTs		bool	`json:"splitTs"`
 }
 
 func (query *Query) Format() string  {

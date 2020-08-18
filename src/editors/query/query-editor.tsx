@@ -12,7 +12,7 @@ type Props = QueryEditorProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseO
 export class QueryEditor extends React.PureComponent<Props> {
   onChangeSplitTs() {
     const query = this.props.query;
-    query.splitTS = !query.splitTS;
+    query.splitTs = !query.splitTs;
     this.props.onChange(query);
     this.props.onRunQuery();
   }
@@ -34,7 +34,7 @@ export class QueryEditor extends React.PureComponent<Props> {
           />
         </div>
 
-        <QueryOptions splitTS={this.props.query.splitTS} onChangeSplitTs={() => this.onChangeSplitTs()} />
+        <QueryOptions splitTs={this.props.query.splitTs} onChangeSplitTs={() => this.onChangeSplitTs()} />
       </div>
     );
   }

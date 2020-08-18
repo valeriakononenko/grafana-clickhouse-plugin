@@ -3,7 +3,7 @@ import { Collapse, Switch } from '@grafana/ui';
 import '../../partials/style.css';
 
 type Props = {
-  splitTS: boolean;
+  splitTs: boolean;
   onChangeSplitTs: () => void;
 };
 
@@ -32,7 +32,7 @@ export class QueryOptions extends React.PureComponent<Props, State> {
     return (
       <div className="gf-form gf-form--grow">
         <div className="query-options-switch">
-          <Switch css="" value={this.props.splitTS} onChange={event => this.props.onChangeSplitTs()} />
+          <Switch css="" value={this.props.splitTs} onChange={event => this.props.onChangeSplitTs()} />
         </div>
 
         <div className="query-options">

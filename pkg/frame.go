@@ -13,7 +13,7 @@ type ClickHouseFrame struct {
 }
 
 func NewFrames(query *Query, response *Response) []*ClickHouseFrame {
-  if query.SplitTS {
+  if query.SplitTs {
 	return splitFrame(query.RefId, response.Meta, response.Data)
   } else {
     frame := NewFrame(query.RefId, query.RefId, response.Meta)
