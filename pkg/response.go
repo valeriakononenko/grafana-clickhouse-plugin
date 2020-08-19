@@ -4,13 +4,7 @@ var SplitLabelFieldName = "label"
 var SplitTimeFieldName = "time"
 var SplitValueFieldName = "value"
 
-
-type FieldMeta struct {
-	Name	string `json:"name"`
-	Type	string `json:"type"`
-}
-
-func getLabel(data map[string]interface{}) string  {
+func getLabel(data map[string]interface{}, defaultLabel string) string  {
   labelValue, okValue := data[SplitLabelFieldName]
   if okValue {
 	label, ok := labelValue.(string)
@@ -19,15 +13,12 @@ func getLabel(data map[string]interface{}) string  {
 	}
   }
 
-  return ""
+  return defaultLabel
 }
 
-func emptyResponse(meta []*FieldMeta, rows int) *Response {
-  return &Response{
-	Meta: meta,
-	Data: make([]map[string]interface{}, rows),
-	Rows: 0,
-  }
+type FieldMeta struct {
+	Name	string `json:"name"`
+	Type	string `json:"type"`
 }
 
 type Response struct {
@@ -36,92 +27,68 @@ type Response struct {
 	Rows	int							`json:"rows"`
 }
 
-func (r *Response) getSplitMeta() []*FieldMeta {
-  fieldsSum := 0
-  checkSum := 111
-  meta := make([]*FieldMeta, 3)
+func (r *Response) getTimeSeriesMeta(splitTs bool) []*FieldMeta {
+  if splitTs {
+	fieldsSum := 0
+	checkSum := 111
+	meta := make([]*FieldMeta, 3)
 
-  for _, m := range r.Meta {
-	switch m.Name {
-	case SplitTimeFieldName:
-	  meta[0] = m
-	  fieldsSum += 100
-	case SplitValueFieldName:
-	  meta[1] = m
-	  fieldsSum += 10
-	case SplitLabelFieldName:
-	  meta[2] = m
-	  fieldsSum += 1
+	for _, m := range r.Meta {
+	  switch m.Name {
+	  case SplitTimeFieldName:
+		meta[0] = m
+		fieldsSum += 100
+	  case SplitValueFieldName:
+		meta[1] = m
+		fieldsSum += 10
+	  case SplitLabelFieldName:
+		meta[2] = m
+		fieldsSum += 1
+	  }
+	}
+
+	if fieldsSum == checkSum {
+	  return meta
 	}
   }
 
-  if fieldsSum == checkSum {
-    return meta
+  return nil
+}
+
+func (r *Response) ToFrames(refId string, splitTs bool) []*ClickHouseFrame {
+  meta := r.getTimeSeriesMeta(splitTs)
+
+  if meta != nil {
+	frames := make(map[string]*ClickHouseFrame)
+
+	for _, row := range r.Data {
+	  label := getLabel(row, refId)
+	  frame, ok := frames[label]
+
+	  if !ok {
+		frame = NewFrame(refId, label, meta)
+		frames[label] = frame
+	  }
+
+	  frame.AddRow(row)
+	}
+
+	framesList := make([]*ClickHouseFrame, len(frames))
+	i := 0
+
+	for _, f := range frames {
+	  framesList[i] = f
+	  i += 1
+	}
+
+	return framesList
   } else {
-    return nil
-  }
-}
+	frame := NewFrame(refId, refId, r.Meta)
 
-func (r *Response) getSplitName(refId string) string {
-  if len(r.Data) > 0 {
-	firstRow := r.Data[0]
-
-	if firstRow != nil {
-	  label := getLabel(firstRow)
-
-	  if label != "" {
-		return label
-	  }
+	for _, row := range r.Data {
+	  frame.AddRow(row)
 	}
+
+	return []*ClickHouseFrame{frame}
   }
-
-  return refId
-}
-
-func (r *Response) Split(split bool) []*Response {
-  if split {
-	meta := r.getSplitMeta()
-
-	if meta != nil {
-	  responses := make(map[string]*Response, 0)
-
-	  for _, row := range r.Data {
-		label := getLabel(row)
-
-		if label != "" {
-		  response, ok := responses[label]
-
-		  if !ok {
-			response = emptyResponse(meta, r.Rows)
-			responses[label] = response
-		  }
-
-		  response.Data[response.Rows] = row
-		  response.Rows += 1
-		}
-	  }
-
-	  responsesList := make([]*Response, len(responses))
-	  i := 0
-
-	  for _, response := range responses {
-		responsesList[i] = response
-		i += 1
-	  }
-
-	  return responsesList
-	}
-  }
-
-  return []*Response{r}
-}
-
-func (r *Response) ToFrame(refId string) *ClickHouseFrame {
-  frame := NewFrame(refId, r.getSplitName(refId), r.Meta)
-
-  for _, row := range r.Data {
-	frame.AddRow(row)
-  }
-
-  return frame
 }
