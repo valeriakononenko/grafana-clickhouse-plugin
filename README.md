@@ -17,7 +17,7 @@ Supports alerting
 3. Build plugin in production mode
 
     ```BASH
-    npm run build && npm run go
+    npm run clean && npm run build && npm run go
     ```
 4. Install plugin
 
