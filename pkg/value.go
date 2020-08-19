@@ -31,11 +31,7 @@ func parseFloatValue(value interface{}, fieldName string, nullable bool) *Value 
 	  }
 	}
   } else if nullable {
-	return &Value{
-	  Val: nil,
-	  Field: data.NewField(fieldName, nil, []*float64{}),
-	  Float: math.NaN(),
-	}
+	return NullValue(fieldName, []*float64{})
   }
 
   return nil
@@ -59,11 +55,7 @@ func parseStringValue(value interface{}, fieldName string, nullable bool) *Value
 	  }
 	}
   } else if nullable {
-	return &Value{
-	  Val: nil,
-	  Field: data.NewField(fieldName, nil, []*string{}),
-	  Float: math.NaN(),
-	}
+	return NullValue(fieldName, []*string{})
   }
 
   return nil
@@ -90,11 +82,7 @@ func parseUInt64Value(value interface{}, fieldName string, nullable bool) *Value
 	  }
 	}
   } else if nullable {
-	return &Value{
-	  Val: nil,
-	  Field: data.NewField(fieldName, nil, []*uint64{}),
-	  Float: math.NaN(),
-	}
+	return NullValue(fieldName, []*uint64{})
   }
 
   return nil
@@ -121,11 +109,7 @@ func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value 
 	  }
 	}
   } else if nullable {
-	return &Value{
-	  Val: nil,
-	  Field: data.NewField(fieldName, nil, []*int64{}),
-	  Float: math.NaN(),
-	}
+	return NullValue(fieldName, []*int64{})
   }
 
   return nil
@@ -173,11 +157,7 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
 	  }
 	}
   } else if nullable {
-	return &Value{
-	  Val: nil,
-	  Field: data.NewField(fieldName, nil, []*time.Time{}),
-	  Float: math.NaN(),
-	}
+	return NullValue(fieldName, []*time.Time{})
   }
 
   return nil
@@ -225,6 +205,14 @@ func ParseValue(valueType string, value interface{}, fieldName string, nullable 
 		return parseStringValue(string(byteValue), fieldName, nullable)
 	  }
 	}
+  }
+}
+
+func NullValue(fieldName string, fieldValues interface{}) *Value {
+  return &Value{
+	Val: nil,
+	Field: data.NewField(fieldName, nil, fieldValues),
+	Float: math.NaN(),
   }
 }
 
