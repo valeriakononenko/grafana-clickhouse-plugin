@@ -40,13 +40,8 @@ func (f *ClickHouseField) Append(value interface{}) {
 	  f.Field.Append(v.Val)
 
 	  if !math.IsNaN(v.Float) {
-		if v.Float < f.Min {
-		  f.Min = v.Float
-		}
-
-		if v.Float > f.Max {
-		  f.Max = v.Float
-		}
+	    f.Min = math.Min(v.Float, f.Min)
+	    f.Max = math.Max(v.Float, f.Max)
 	  }
 	}
 }
@@ -59,11 +54,11 @@ func (f *ClickHouseField) toFrameField() *data.Field  {
 			})
 		}
 
-		if f.Min != math.NaN() {
+		if !math.IsNaN(f.Min) {
 			f.Field.Config.SetMin(f.Min)
 		}
 
-		if f.Max != math.NaN() {
+		if !math.IsNaN(f.Max) {
 			f.Field.Config.SetMax(f.Max)
 		}
 	}
