@@ -13,22 +13,13 @@ import (
 )
 
 func parseFloatValue(value interface{}, fieldName string, nullable bool) *Value   {
-
   if value != nil {
     fv := reflect.ValueOf(value).Float()
 
     if nullable {
-	  return &Value{
-		Val: &fv,
-		Field: data.NewField(fieldName, nil, []*float64{}),
-		Float: fv,
-	  }
+	  return NewValue(&fv, fieldName, []*float64{}, fv)
 	} else {
-	  return &Value{
-		Val: fv,
-		Field: data.NewField(fieldName, nil, []float64{}),
-		Float: fv,
-	  }
+	  return NewValue(fv, fieldName, []float64{}, fv)
 	}
   } else if nullable {
 	return NullValue(fieldName, []*float64{})
@@ -42,17 +33,9 @@ func parseStringValue(value interface{}, fieldName string, nullable bool) *Value
 	str := reflect.ValueOf(value).String()
 
 	if nullable {
-	  return &Value{
-		Val: &str,
-		Field: data.NewField(fieldName, nil, []*string{}),
-		Float: math.NaN(),
-	  }
+	  return NewValue(&str, fieldName, []*string{}, math.NaN())
 	} else {
-	  return &Value{
-		Val: str,
-		Field: data.NewField(fieldName, nil, []string{}),
-		Float: math.NaN(),
-	  }
+	  return NewValue(str, fieldName, []string{}, math.NaN())
 	}
   } else if nullable {
 	return NullValue(fieldName, []*string{})
@@ -62,23 +45,14 @@ func parseStringValue(value interface{}, fieldName string, nullable bool) *Value
 }
 
 func parseUInt64Value(value interface{}, fieldName string, nullable bool) *Value  {
-
   if value != nil {
 	ui64v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 64)
 
 	if err == nil {
 	  if nullable {
-		return &Value{
-		  Val:   &ui64v,
-		  Field: data.NewField(fieldName, nil, []*uint64{}),
-		  Float: float64(ui64v),
-		}
+		return NewValue(&ui64v, fieldName, []*uint64{}, float64(ui64v))
 	  } else {
-		return &Value{
-		  Val:   ui64v,
-		  Field: data.NewField(fieldName, nil, []uint64{}),
-		  Float: float64(ui64v),
-		}
+		return NewValue(ui64v, fieldName, []uint64{}, float64(ui64v))
 	  }
 	}
   } else if nullable {
@@ -89,23 +63,14 @@ func parseUInt64Value(value interface{}, fieldName string, nullable bool) *Value
 }
 
 func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value  {
-
   if value != nil {
 	i64v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 64)
 
 	if err == nil {
 	  if nullable {
-		return &Value{
-		  Val:   &i64v,
-		  Field: data.NewField(fieldName, nil, []*int64{}),
-		  Float: float64(i64v),
-		}
+		return NewValue(&i64v, fieldName, []*int64{}, float64(i64v))
 	  } else {
-		return &Value{
-		  Val:   i64v,
-		  Field: data.NewField(fieldName, nil, []int64{}),
-		  Float: float64(i64v),
-		}
+		return NewValue(i64v, fieldName, []int64{}, float64(i64v))
 	  }
 	}
   } else if nullable {
@@ -116,32 +81,15 @@ func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value 
 }
 
 func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string) *Value  {
-
-  toNullableValue := func(t time.Time) *Value {
-	return &Value{
-	  Val:   &t,
-	  Field: data.NewField(fieldName, nil, []*time.Time{}),
-	  Float: float64(t.Unix()),
-	}
-  }
-
-  toValue := func(t time.Time) *Value {
-	return &Value{
-	  Val:   t,
-	  Field: data.NewField(fieldName, nil, []time.Time{}),
-	  Float: float64(t.Unix()),
-	}
-  }
-
   if value != nil {
 	strValue := fmt.Sprintf("%v", value)
 	t, err := time.Parse(layout, strValue)
 
 	if err == nil {
 	  if nullable {
-		return toNullableValue(t)
+		return NewValue(&t, fieldName, []*time.Time{}, float64(t.Unix()))
 	  } else {
-		return toValue(t)
+		return NewValue(t, fieldName, []time.Time{}, float64(t.Unix()))
 	  }
 	} else {
 	  i64v, err := strconv.ParseInt(strValue, 10, 64)
@@ -150,9 +98,9 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
 		timeValue := time.Unix(i64v, i64v)
 
 		if nullable {
-		  return toNullableValue(timeValue)
+		  return NewValue(&timeValue, fieldName, []*time.Time{}, float64(timeValue.Unix()))
 		} else {
-		  return toValue(timeValue)
+		  return NewValue(timeValue, fieldName, []time.Time{}, float64(timeValue.Unix()))
 		}
 	  }
 	}
@@ -213,6 +161,14 @@ func NullValue(fieldName string, fieldValues interface{}) *Value {
 	Val: nil,
 	Field: data.NewField(fieldName, nil, fieldValues),
 	Float: math.NaN(),
+  }
+}
+
+func NewValue(value interface{}, fieldName string, fieldValues interface{}, floatValue float64) *Value {
+  return &Value{
+	Val: value,
+	Field: data.NewField(fieldName, nil, fieldValues),
+	Float: floatValue,
   }
 }
 
