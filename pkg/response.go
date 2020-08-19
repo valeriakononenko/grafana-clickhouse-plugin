@@ -24,7 +24,6 @@ type FieldMeta struct {
 type Response struct {
 	Meta	[]*FieldMeta				`json:"meta"`
 	Data 	[]map[string]interface{}	`json:"data"`
-	Rows	int							`json:"rows"`
 }
 
 func (r *Response) getTimeSeriesMeta(splitTs bool) []*FieldMeta {
