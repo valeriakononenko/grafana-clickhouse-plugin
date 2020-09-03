@@ -1,7 +1,7 @@
 import React from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery } from '../../models/model';
+import { ClickHouseOptions, ClickHouseQuery } from '../../model';
 import { InlineFormLabel } from '@grafana/ui';
 import { QueryField } from './query-field';
 import '../../partials/style.css';

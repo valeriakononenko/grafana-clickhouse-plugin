@@ -8,6 +8,9 @@ import {
   isDataFrame,
 } from '@grafana/data';
 import { DataQueryResponseData } from '@grafana/data/types/datasource';
+import Mustache from 'mustache';
+
+type TemplateVariables = { [key: string]: any };
 
 export interface ClickHouseQuery extends DataQuery {
   datasourceId: number;
@@ -48,7 +51,7 @@ export function buildAnnotationRequest(
   } as DataQueryRequest<ClickHouseQuery>;
 }
 
-export function buildAnnotationEvent(annotation: any, data: DataFrame, i: number): AnnotationEvent | null {
+function buildAnnotationEvent(annotation: any, data: DataFrame, i: number): AnnotationEvent | null {
   const event = {
     annotation: annotation,
   } as AnnotationEvent;
@@ -102,4 +105,56 @@ export function buildAnnotationEvents(annotation: any, data: DataQueryResponseDa
   }
 
   return events;
+}
+
+function getTemplateVariables(request: DataQueryRequest<ClickHouseQuery>): TemplateVariables {
+  const result: TemplateVariables = {};
+  const vars: TemplateVariables = {
+    interval: request.interval,
+    intervalMs: request.intervalMs,
+    maxDataPoints: request.maxDataPoints,
+    timezone: request.timezone,
+    from: request.range.from.unix(),
+    to: request.range.to.unix(),
+  };
+
+  const scopedVars = request.scopedVars;
+  const scopedKeys = Object.keys(scopedVars);
+  const varKeys = Object.keys(vars);
+
+  for (let i = 0; i < scopedKeys.length; i++) {
+    const key = scopedKeys[i];
+    const scopedVar = scopedVars[key];
+    if (scopedVar && scopedVar.value !== undefined) {
+      result[key] = scopedVar.value;
+    }
+  }
+
+  for (let j = 0; j < varKeys.length; j++) {
+    const key = varKeys[j];
+    const value = vars[key];
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
+export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {
+  const requestTargets: ClickHouseQuery[] = [];
+  const targets = request.targets || [];
+
+  for (let i = 0; i < targets.length; i++) {
+    let target = targets[0];
+
+    if (!target.hide && target.query) {
+      target.query = Mustache.render(target.query, getTemplateVariables(request));
+      requestTargets.push(target);
+    }
+  }
+
+  request.targets = requestTargets;
+
+  return request;
 }

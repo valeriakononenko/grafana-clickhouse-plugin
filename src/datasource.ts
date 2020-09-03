@@ -5,7 +5,13 @@ import {
   DataQueryResponse,
   DataSourceInstanceSettings,
 } from '@grafana/data';
-import { buildAnnotationEvents, buildAnnotationRequest, ClickHouseOptions, ClickHouseQuery } from './models/model';
+import {
+  buildAnnotationEvents,
+  buildAnnotationRequest,
+  buildDataRequest,
+  ClickHouseOptions,
+  ClickHouseQuery,
+} from './model';
 import { Observable, from } from 'rxjs';
 import { DataSourceWithBackend } from '@grafana/runtime';
 
@@ -37,9 +43,8 @@ export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery,
   }
 
   private _query(request: DataQueryRequest<ClickHouseQuery>): Promise<DataQueryResponse> {
-    request.targets = request.targets.filter((target: ClickHouseQuery) => !target.hide && target.query);
     return request.targets.length
-      ? super.query(request).toPromise()
+      ? super.query(buildDataRequest(request)).toPromise()
       : Promise.resolve({ data: [] } as DataQueryResponse);
   }
 }
