@@ -13,7 +13,7 @@
   "executable": "plugin",
 
   "info": {
-    "description": "Clickhouse plugin for Grafana",
+    "description": "Clickhouse plugin for Grafana supporting alerts",
     "author": {
       "name": "Valeria Kononenko",
       "url": "https://github.com/valeriakononenko"

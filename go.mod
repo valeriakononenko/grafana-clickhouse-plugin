@@ -1,9 +1,7 @@
 module cds
 
 require (
-	github.com/ClickHouse/clickhouse-go v1.4.1
 	github.com/grafana/grafana-plugin-sdk-go v0.76.0
-	github.com/jmoiron/sqlx v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381
 )
 

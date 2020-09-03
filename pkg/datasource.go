@@ -45,15 +45,15 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
 
-	frames := NewFrames(query, res)
+	frames := res.ToFrames(query.RefId, query.SplitTs)
 
 	response := backend.DataResponse{
-		Frames: make([]*data.Frame, 0),
+		Frames: make([]*data.Frame, len(frames)),
 	}
 
-	for _, frame := range frames {
+	for i, frame := range frames {
 	  if frame != nil {
-		response.Frames = append(response.Frames, frame.ToDataFrame())
+		response.Frames[i] = frame.ToDataFrame()
 	  }
 	}
 
