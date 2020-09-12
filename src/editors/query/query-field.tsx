@@ -1,6 +1,6 @@
 import { ExploreQueryFieldProps } from '@grafana/data';
 import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery, Default } from '../../models/model';
+import { ClickHouseOptions, ClickHouseQuery, Default } from '../../model';
 import React from 'react';
 import AceEditor from 'react-ace';
 

@@ -29,19 +29,16 @@ type Response struct {
 func (r *Response) getTimeSeriesMeta(splitTs bool) []*FieldMeta {
   if splitTs {
 	fieldsSum := 0
-	checkSum := 111
-	meta := make([]*FieldMeta, 3)
+	checkSum := 11
+	meta := make([]*FieldMeta, 2)
 
 	for _, m := range r.Meta {
 	  switch m.Name {
 	  case SplitTimeFieldName:
 		meta[0] = m
-		fieldsSum += 100
+		fieldsSum += 10
 	  case SplitValueFieldName:
 		meta[1] = m
-		fieldsSum += 10
-	  case SplitLabelFieldName:
-		meta[2] = m
 		fieldsSum += 1
 	  }
 	}

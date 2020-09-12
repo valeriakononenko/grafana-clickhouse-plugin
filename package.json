@@ -24,7 +24,8 @@
     "@grafana/data": "^7.0.0-beta.3",
     "@grafana/runtime": "^7.0.0-beta.3",
     "@grafana/toolkit": "^7.0.0-beta.3",
-    "@grafana/ui": "^7.0.0-beta.3"
+    "@grafana/ui": "^7.0.0-beta.3",
+    "@types/mustache": "^4.0.1"
   },
   "engines": {
     "node": ">=12 <13"
