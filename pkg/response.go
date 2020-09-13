@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+  "strings"
+  "time"
+)
 
 var SplitLabelFieldName = "label"
 var SplitTimeFieldName = "time"
@@ -55,7 +58,7 @@ func (r *Response) getTimeSeriesMeta(splitTs bool) []*FieldMeta {
   return nil
 }
 
-func (r *Response) ToFrames(refId string, splitTs bool, timezone string) []*ClickHouseFrame {
+func (r *Response) ToFrames(refId string, splitTs bool, timezone *time.Location) []*ClickHouseFrame {
   meta := r.getTimeSeriesMeta(splitTs)
 
   if meta != nil {

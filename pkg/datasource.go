@@ -7,6 +7,7 @@ import (
   "github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
   "github.com/grafana/grafana-plugin-sdk-go/data"
   "golang.org/x/net/context"
+  "time"
 )
 
 func GetDatasourceServeOpts() datasource.ServeOpts {
@@ -35,20 +36,24 @@ func (ds *ClickHouseDatasource) getClient(ctx backend.PluginContext) (*ClickHous
 	}, nil
 }
 
-func (ds *ClickHouseDatasource) getTimeZone(client *ClickHouseClient, isDefault bool) string {
+func (ds *ClickHouseDatasource) getTimeZone(client *ClickHouseClient, isDefault bool) *time.Location {
   if !isDefault {
-	res, err := client.Query(TimeZoneQuery); if err != nil { return DefaultTimeZone }
+	res, err := client.Query(TimeZoneQuery); if err != nil { return time.UTC }
 
 	if len(res.Data) > 0 {
 	  var tz = res.Data[0][TimeZoneFieldName]
 
 	  if tz != nil {
-	    return fmt.Sprintf("%v", tz)
+		location, err := time.LoadLocation(fmt.Sprintf("%v", tz))
+
+		if err == nil {
+		  return location
+		}
 	  }
 	}
   }
 
-  return DefaultTimeZone
+  return time.UTC
 }
 
 func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) backend.DataResponse  {

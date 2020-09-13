@@ -2,6 +2,7 @@ package main
 
 import (
   "github.com/grafana/grafana-plugin-sdk-go/data"
+  "time"
 )
 
 type ClickHouseFrame struct {
@@ -36,7 +37,7 @@ func (f *ClickHouseFrame) getField(name string) *ClickHouseField {
   return nil
 }
 
-func (f *ClickHouseFrame) AddRow(row map[string]interface{}, timezone string)  {
+func (f *ClickHouseFrame) AddRow(row map[string]interface{}, timezone *time.Location)  {
 	for key, value := range row {
 		field := f.getField(key)
 		if field != nil {

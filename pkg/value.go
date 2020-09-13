@@ -80,12 +80,11 @@ func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value 
   return nil
 }
 
-func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string, timezone string) *Value  {
-  tz, err := time.LoadLocation(timezone); if err != nil { tz = time.UTC }
-
+func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string,
+					timezone *time.Location) *Value  {
   if value != nil {
 	strValue := fmt.Sprintf("%v", value)
-	t, err := time.ParseInLocation(layout, strValue, tz)
+	t, err := time.ParseInLocation(layout, strValue, timezone)
 
 	if err == nil {
 	  if nullable {
@@ -113,7 +112,7 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
   return nil
 }
 
-func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone string) *Value  {
+func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone *time.Location) *Value  {
   if strings.HasPrefix(valueType, "LowCardinality") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"LowCardinality("), ")"),
 	  value, fieldName, nullable, timezone)
