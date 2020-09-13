@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/data"
+  "github.com/grafana/grafana-plugin-sdk-go/data"
+  "time"
 )
 
 type ClickHouseFrame struct {
@@ -38,13 +37,11 @@ func (f *ClickHouseFrame) getField(name string) *ClickHouseField {
   return nil
 }
 
-func (f *ClickHouseFrame) AddRow(row map[string]interface{})  {
+func (f *ClickHouseFrame) AddRow(row map[string]interface{}, timezone *time.Location)  {
 	for key, value := range row {
 		field := f.getField(key)
 		if field != nil {
-			field.Append(value)
-		} else {
-			backend.Logger.Warn(fmt.Sprintf("Unable to find field with name '%s', values are not added", key))
+			field.Append(value, timezone)
 		}
 	}
 }

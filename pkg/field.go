@@ -5,6 +5,7 @@ import (
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "github.com/grafana/grafana-plugin-sdk-go/data"
   "math"
+  "time"
 )
 
 var dateLayout = "2006-01-02"
@@ -28,8 +29,8 @@ type ClickHouseField struct {
 	Max float64
 }
 
-func (f *ClickHouseField) Append(value interface{}) {
-	v := ParseValue(f.Type, value, f.Name, false)
+func (f *ClickHouseField) Append(value interface{}, timezone *time.Location) {
+	v := ParseValue(f.Type, value, f.Name, false, timezone)
 	if v == nil {
 	  backend.Logger.Warn(fmt.Sprintf("Value [%v / %v] wouln't be added to Field", value, f.Type))
 	} else {

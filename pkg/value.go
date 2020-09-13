@@ -80,10 +80,11 @@ func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value 
   return nil
 }
 
-func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string) *Value  {
+func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string,
+					timezone *time.Location) *Value  {
   if value != nil {
 	strValue := fmt.Sprintf("%v", value)
-	t, err := time.Parse(layout, strValue)
+	t, err := time.ParseInLocation(layout, strValue, timezone)
 
 	if err == nil {
 	  if nullable {
@@ -111,14 +112,13 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
   return nil
 }
 
-func ParseValue(valueType string, value interface{}, fieldName string, nullable bool) *Value  {
-
+func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone *time.Location) *Value  {
   if strings.HasPrefix(valueType, "LowCardinality") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"LowCardinality("), ")"),
-	  value, fieldName, nullable)
+	  value, fieldName, nullable, timezone)
   } else if strings.HasPrefix(valueType, "Nullable") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"Nullable("), ")"),
-	  value, fieldName, true)
+	  value, fieldName, true, timezone)
   } else {
 	switch valueType {
 	case "UInt8", "UInt16", "UInt32", "Int8", "Int16", "Int32", "Float32", "Float64":
@@ -130,9 +130,9 @@ func ParseValue(valueType string, value interface{}, fieldName string, nullable 
 	case "Int64":
 	  return parseInt64Value(value, fieldName, nullable)
 	case "Date":
-	  return parseTimeValue(value, fieldName, nullable, dateLayout)
+	  return parseTimeValue(value, fieldName, nullable, dateLayout, timezone)
 	case "DateTime":
-	  return parseTimeValue(value, fieldName, nullable, dateTimeLayout)
+	  return parseTimeValue(value, fieldName, nullable, dateTimeLayout, timezone)
 	default:
 	  if strings.HasPrefix(valueType, "Decimal") {
 		return parseFloatValue(value, fieldName, nullable)
