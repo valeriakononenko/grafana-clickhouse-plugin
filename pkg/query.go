@@ -1,12 +1,18 @@
 package main
 
 import (
+  "fmt"
   "strings"
 )
 
 var FormatJson = "FORMAT JSON"
 
 var DefaultQuery = "SELECT 1 FORMAT JSON;"
+
+var TimeZoneFieldName = "timezone()"
+var TimeZoneQuery = fmt.Sprintf("SELECT %s FORMAT JSON;", TimeZoneFieldName)
+var DefaultTimeZone = "UTC"
+
 
 type Query struct {
 	RefId		string	`json:"refId"`

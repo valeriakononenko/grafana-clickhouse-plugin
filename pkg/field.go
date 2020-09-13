@@ -28,8 +28,8 @@ type ClickHouseField struct {
 	Max float64
 }
 
-func (f *ClickHouseField) Append(value interface{}) {
-	v := ParseValue(f.Type, value, f.Name, false)
+func (f *ClickHouseField) Append(value interface{}, timezone string) {
+	v := ParseValue(f.Type, value, f.Name, false, timezone)
 	if v == nil {
 	  backend.Logger.Warn(fmt.Sprintf("Value [%v / %v] wouln't be added to Field", value, f.Type))
 	} else {
