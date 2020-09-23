@@ -323,7 +323,7 @@ export function buildMetricFindValues(res: DataQueryResponse): MetricFindValue[]
           for (let i = 0; i < d.length; i++) {
             const v = values.get(i);
 
-            if (f.type === FieldType.time) {
+            if (f.type === FieldType.time && (typeof v === 'number' || v instanceof Date)) {
               result.push({
                 text: makeDateTimeString(new Date(v)),
               });
