@@ -4,11 +4,14 @@ import {
   DataQueryRequest,
   DataQueryResponse,
   DataSourceInstanceSettings,
+  MetricFindValue,
 } from '@grafana/data';
 import {
   buildAnnotationEvents,
   buildAnnotationRequest,
   buildDataRequest,
+  buildMetricFindValues,
+  buildMetricQueryRequest,
   ClickHouseOptions,
   ClickHouseQuery,
 } from './model';
@@ -40,6 +43,12 @@ export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery,
         err.isHandled = true;
         return [];
       });
+  }
+
+  metricFindQuery(query: string): Promise<MetricFindValue[]> {
+    return this._query(buildMetricQueryRequest(query))
+      .then(buildMetricFindValues)
+      .catch(_ => [])
   }
 
   private _query(request: DataQueryRequest<ClickHouseQuery>): Promise<DataQueryResponse> {

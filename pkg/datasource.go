@@ -73,6 +73,7 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	response := backend.DataResponse{
 		Frames: make([]*data.Frame, len(frames)),
+		Error: nil,
 	}
 
 	for i, frame := range frames {
