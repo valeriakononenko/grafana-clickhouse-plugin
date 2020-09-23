@@ -48,7 +48,7 @@ export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery,
   metricFindQuery(query: string): Promise<MetricFindValue[]> {
     return this._query(buildMetricQueryRequest(query))
       .then(buildMetricFindValues)
-      .catch(_ => [])
+      .catch(_ => []);
   }
 
   private _query(request: DataQueryRequest<ClickHouseQuery>): Promise<DataQueryResponse> {

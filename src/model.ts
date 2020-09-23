@@ -7,6 +7,7 @@ import {
   DataQueryResponse,
   DataSourceJsonData,
   dateTime,
+  FieldType,
   isDataFrame,
   MetricFindValue,
   ScopedVars,
@@ -15,7 +16,6 @@ import {
 import { DataQueryResponseData } from '@grafana/data/types/datasource';
 import Mustache from 'mustache';
 import { getTemplateSrv } from '@grafana/runtime';
-import {FieldType} from "@grafana/data/types/dataFrame";
 
 type TemplateVariables = { [key: string]: any };
 
