@@ -8,8 +8,8 @@ import aceCHSnippets from '../ace/clickhouse-snippets';
 
 const Default = {
   LOADING_TIMEOUT_MS: 500,
-  MAX_LOADING_TRIES: 3
-}
+  MAX_LOADING_TRIES: 3,
+};
 
 export function loadAce(): boolean {
   let aceLoaded = false;
