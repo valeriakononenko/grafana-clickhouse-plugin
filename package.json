@@ -21,17 +21,17 @@
   "author": "Valeria Kononenko",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "^7.0.0-beta.3",
-    "@grafana/runtime": "^7.0.0-beta.3",
-    "@grafana/toolkit": "^7.0.0-beta.3",
-    "@grafana/ui": "^7.0.0-beta.3",
-    "@types/mustache": "^4.0.1"
+    "@grafana/data": "^7.1.5",
+    "@grafana/runtime": "^7.1.5",
+    "@grafana/toolkit": "^7.1.5",
+    "@grafana/ui": "^7.1.5"
   },
   "engines": {
     "node": ">=12 <13"
   },
   "dependencies": {
     "ace-builds": "^1.4.11",
+    "mustache": "^4.0.1",
     "react-ace": "^9.0.0"
   }
 }
