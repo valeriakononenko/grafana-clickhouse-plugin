@@ -1,6 +1,4 @@
-import { ExploreQueryFieldProps } from '@grafana/data';
-import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery, Default } from '../../model';
+import { Default } from '../../model';
 import React from 'react';
 import AceEditor from 'react-ace';
 
@@ -13,23 +11,20 @@ import aceCHMode from '../ace/clickhouse-mode';
 import aceCHSnippets from '../ace/clickhouse-snippets';
 
 import { config } from '@grafana/runtime';
+import { QueryFieldProps } from '@grafana/ui/components/QueryField/QueryField';
 
-type Props = ExploreQueryFieldProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseOptions>;
+interface Props extends QueryFieldProps {
+  splitTs: boolean;
+  onRunQuery: () => void;
+  onChange: (value: string) => void;
+}
 
-type State = {
-  query: string;
-};
-
-export class QueryField extends React.PureComponent<Props, State> {
+export class QueryField extends React.PureComponent<Props> {
   private aceLoaded: boolean;
   private aceLoadingTries: number;
 
   constructor(props: Props, context: React.Context<any>) {
     super(props, context);
-
-    this.state = {
-      query: props.query.query || Default.QUERY,
-    };
 
     this.aceLoaded = false;
     this.aceLoadingTries = 0;
@@ -37,13 +32,8 @@ export class QueryField extends React.PureComponent<Props, State> {
   }
 
   onChange = (query: string): void => {
-    if (query && query !== this.props.query.query) {
-      this.props.query.query = query;
-      this.setState((prevState: State) => {
-        return {
-          query: query,
-        };
-      });
+    if (query && query !== this.props.query) {
+      this.props.onChange(query);
     }
   };
 
@@ -67,7 +57,9 @@ export class QueryField extends React.PureComponent<Props, State> {
   }
 
   render() {
-    const lines = (this.state.query.match(/\n/g) || []).length + 1;
+    const query = this.props.query || Default.QUERY;
+
+    const lines = (query.match(/\n/g) || []).length + 1;
     const heightPx = (lines > 4 ? lines * 14 : 64) + 'px';
 
     return (
@@ -78,7 +70,7 @@ export class QueryField extends React.PureComponent<Props, State> {
           onChange={this.onChange}
           onBlur={this.runQuery}
           placeholder="Enter ClickHouse query"
-          value={this.state.query}
+          value={query}
           height={heightPx}
           width="100%"
           enableBasicAutocompletion={true}

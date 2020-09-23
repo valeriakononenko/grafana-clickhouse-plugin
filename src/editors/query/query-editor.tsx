@@ -17,6 +17,12 @@ export class QueryEditor extends React.PureComponent<Props> {
     this.props.onRunQuery();
   }
 
+  onChangeQuery(query: string) {
+    const q = this.props.query;
+    q.query = query;
+    this.props.onChange(q);
+  }
+
   render() {
     return (
       <div className="gf-form--grow">
@@ -25,12 +31,12 @@ export class QueryEditor extends React.PureComponent<Props> {
             Query
           </InlineFormLabel>
           <QueryField
-            query={this.props.query}
+            query={this.props.query.query}
             onBlur={this.props.onRunQuery}
-            onChange={this.props.onChange}
+            onChange={(q: string) => this.onChangeQuery(q)}
             onRunQuery={this.props.onRunQuery}
-            datasource={this.props.datasource}
-            history={[]}
+            splitTs={this.props.query.splitTs}
+            portalOrigin=""
           />
         </div>
 
