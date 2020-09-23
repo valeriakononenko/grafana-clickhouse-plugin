@@ -74,21 +74,62 @@ export const Default = {
   QUERY: 'SELECT 1;',
 };
 
+function defaultClickHouseQuery(q: Partial<ClickHouseQuery>): ClickHouseQuery {
+  return {
+    datasource: q.datasource || '',
+    datasourceId: q.datasourceId || 0,
+    query: q.query || Default.QUERY,
+    refId: q.refId || '',
+    splitTs: q.splitTs || false,
+
+    hide: q.hide || false,
+    key: q.key || '',
+    queryType: q.queryType || '',
+  };
+}
+
+function defaultQueryRequest(qr: Partial<DataQueryRequest<ClickHouseQuery>>): DataQueryRequest<ClickHouseQuery> {
+  const range = qr.range || makeTimeRange(0, Date.now());
+
+  return {
+    app: qr.app || '',
+    dashboardId: qr.dashboardId || 0,
+    interval: qr.interval || '',
+    panelId: qr.panelId || 0,
+    range: range,
+    requestId: qr.requestId || '',
+    scopedVars: qr.scopedVars || ({} as ScopedVars),
+    startTime: qr.startTime || Date.now(),
+    targets: qr.targets || [],
+    timezone: qr.timezone || '',
+
+    intervalMs: qr.intervalMs || 0,
+    maxDataPoints: qr.maxDataPoints || Date.now(),
+    reverse: qr.reverse || false,
+    cacheTimeout: qr.cacheTimeout || '',
+    rangeRaw: range.raw,
+    timeInfo: qr.timeInfo || '',
+    endTime: qr.endTime || Date.now() + 3600,
+  };
+}
+
 export function buildAnnotationRequest(
   request: AnnotationQueryRequest<ClickHouseQuery>,
   datasourceId: number
 ): DataQueryRequest<ClickHouseQuery> {
-  return {
+  return defaultQueryRequest({
+    range: request.range,
+    dashboardId: request.dashboard?.id || 0,
     requestId: ['annotation', datasourceId, request.annotation.name].join('-'),
     targets: [
-      {
+      defaultClickHouseQuery({
         refId: request.annotation.refId || request.annotation.name,
         datasourceId: datasourceId,
-        query: request.annotation.query,
         datasource: request.annotation.datasource,
-      },
+        query: request.annotation.query,
+      }),
     ],
-  } as DataQueryRequest<ClickHouseQuery>;
+  });
 }
 
 function buildAnnotationEvent(annotation: any, data: DataFrame, i: number): AnnotationEvent | null {
@@ -289,26 +330,13 @@ function makeDateTimeString(time: Date): string {
 }
 
 export function buildMetricQueryRequest(query: string): DataQueryRequest<ClickHouseQuery> {
-  return {
-    app: '',
-    dashboardId: 0,
-    interval: '',
-    panelId: 0,
-    range: makeTimeRange(0, Date.now()),
-    requestId: '',
-    scopedVars: {} as ScopedVars,
-    startTime: 0,
+  return defaultQueryRequest({
     targets: [
-      {
-        refId: '',
-        datasourceId: 0,
+      defaultClickHouseQuery({
         query: query,
-        datasource: '',
-        splitTs: false,
-      },
+      }),
     ],
-    timezone: '',
-  };
+  });
 }
 
 export function buildMetricFindValues(res: DataQueryResponse): MetricFindValue[] {
