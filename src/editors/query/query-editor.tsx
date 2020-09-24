@@ -91,6 +91,15 @@ export class QueryEditor extends React.PureComponent<Props, State> {
           collapsibleLabel="Template variables"
           collapsibleText={
             <div>
+              <div>
+                <p className="query-variables-note-header">
+                  Note! Use triple curly braces to avoid escaping. For timezone = 'Etc/GMT-3':
+                </p>
+                <pre>
+                  Example: SELECT {'{{{'}timezone{'}}}'}
+                </pre>
+              </div>
+
               {variablesList.length > 0 && (
                 <ul className="query-variables-list">
                   {variablesList.map(variable => (
@@ -98,8 +107,6 @@ export class QueryEditor extends React.PureComponent<Props, State> {
                   ))}
                 </ul>
               )}
-
-              <p className="query-variables-note">Note! Use triple curly brackets to avoid escaping</p>
             </div>
           }
         />

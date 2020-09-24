@@ -39,18 +39,18 @@ export class QueryOption extends React.PureComponent<Props, State> {
   render() {
     return (
       <div className="gf-form gf-form--grow">
-        <div className="query-options-switch">
-          {this.hasSwitch && <Switch css="" value={this.props.switch} onChange={event => this.onSwitch()} />}
+        <div className="query-option-switch">
+          {this.hasSwitch && <Switch css="" value={this.props.switch} onChange={() => this.onSwitch()} />}
         </div>
 
-        <div className="query-options">
+        <div className="query-option-collapsible">
           <Collapse
             label={this.props.collapsibleLabel}
             collapsible={true}
             isOpen={this.state.isOpen}
             onToggle={() => this.toggle()}
           >
-            {this.props.collapsibleText}
+            <div className="query-option-collapsible-text">{this.props.collapsibleText}</div>
           </Collapse>
         </div>
       </div>
