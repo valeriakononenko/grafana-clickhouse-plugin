@@ -50,8 +50,6 @@ function isTemplateVariableModel(tvm: any): tvm is TemplateVariableModel {
   );
 }
 
-const ALL_VARIABLE = '$__all';
-
 export interface ClickHouseQuery extends DataQuery {
   datasourceId: number;
   query: string;
@@ -72,6 +70,10 @@ export interface ClickHouseOptions extends DataSourceJsonData {
 
 export const Default = {
   QUERY: 'SELECT 1;',
+  BROWSER_TIMEZONE: 'browser',
+  ALL_VARIABLE: '$__all',
+  TIMEZONE_OFFSET: 'Etc/GMT',
+  PRELOADED_QUERY: 'Loading ...',
 };
 
 function defaultClickHouseQuery(q: Partial<ClickHouseQuery>): ClickHouseQuery {
@@ -188,13 +190,19 @@ export function buildAnnotationEvents(annotation: any, data: DataQueryResponseDa
   return events;
 }
 
-function getTemplateVariablesFromRequest(request: DataQueryRequest<ClickHouseQuery>): TemplateVariables {
+function getTimeZone(tz: string): string {
+  return tz === Default.BROWSER_TIMEZONE
+    ? Default.TIMEZONE_OFFSET + (new Date().getTimezoneOffset() / 60).toString()
+    : tz;
+}
+
+function getTemplateVariablesFromRequest(request: DataQueryRequest): TemplateVariables {
   const result: TemplateVariables = {};
   const vars: TemplateVariables = {
     interval: request.interval,
     intervalMs: request.intervalMs,
     maxDataPoints: request.maxDataPoints,
-    timezone: request.timezone,
+    timezone: getTimeZone(request.timezone),
     from: request.range.from.unix(),
     to: request.range.to.unix(),
   };
@@ -211,24 +219,10 @@ function getTemplateVariablesFromRequest(request: DataQueryRequest<ClickHouseQue
   return result;
 }
 
-function getTemplateVariablesFromScopedVars(scopedVars: ScopedVars): TemplateVariables {
-  const result: TemplateVariables = {};
-  const scopedKeys = Object.keys(scopedVars);
-
-  for (let i = 0; i < scopedKeys.length; i++) {
-    const key = scopedKeys[i];
-    const scopedVar = scopedVars[key];
-    if (scopedVar && scopedVar.value !== undefined) {
-      result[key] = scopedVar.value;
-    }
-  }
-
-  return result;
-}
-
 function getArrayVariable(tvm: TemplateVariableModel): string[] {
   const result: string[] = [];
-  const isAll = tvm.current.value instanceof Array && tvm.current.value.length && tvm.current.value[0] === ALL_VARIABLE;
+  const isAll =
+    tvm.current.value instanceof Array && tvm.current.value.length && tvm.current.value[0] === Default.ALL_VARIABLE;
 
   for (let i = 0; i < tvm.options.length; i++) {
     const option = tvm.options[i];
@@ -277,12 +271,20 @@ function addTemplateVariables(vars: TemplateVariables, otherVars: TemplateVariab
   return vars;
 }
 
-function getTemplateVariables(request: DataQueryRequest<ClickHouseQuery>): TemplateVariables {
-  const fromRequest = getTemplateVariablesFromRequest(request);
-  const fromScopedVars = getTemplateVariablesFromScopedVars(request.scopedVars);
-  const fromTemplateSrv = getTemplateVariablesFromTemplateSrv();
+export function getTemplateVariables(request: DataQueryRequest): TemplateVariables {
+  return addTemplateVariables(getTemplateVariablesFromRequest(request), getTemplateVariablesFromTemplateSrv());
+}
 
-  return addTemplateVariables(addTemplateVariables(fromRequest, fromScopedVars), fromTemplateSrv);
+function renderQuery(query: string, request: DataQueryRequest): string {
+  return Mustache.render(query, getTemplateVariables(request));
+}
+
+export function preloadQuery(query: string, request: DataQueryRequest | undefined): string {
+  try {
+    return request !== undefined ? renderQuery(query, request) : Default.PRELOADED_QUERY;
+  } catch (e) {
+    return Default.PRELOADED_QUERY;
+  }
 }
 
 export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {
@@ -290,10 +292,10 @@ export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): Da
   const targets = request.targets || [];
 
   for (let i = 0; i < targets.length; i++) {
-    let target = targets[0];
+    let target = targets[i];
 
     if (!target.hide && target.query) {
-      target.query = Mustache.render(target.query, getTemplateVariables(request));
+      target.query = renderQuery(target.query, request);
       requestTargets.push(target);
     }
   }
