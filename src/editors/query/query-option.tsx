@@ -1,23 +1,31 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Collapse, Switch } from '@grafana/ui';
 import '../../partials/style.css';
 
 type Props = {
-  splitTs: boolean;
-  onChangeSplitTs: () => void;
+  switch?: boolean;
+  onSwitch?: () => void;
+  collapsibleLabel: string;
+  collapsibleText: ReactNode;
 };
 
 type State = {
   isOpen: boolean;
 };
 
-export class QueryOptions extends React.PureComponent<Props, State> {
+export class QueryOption extends React.PureComponent<Props, State> {
+  onSwitch: () => void;
+  hasSwitch: boolean;
+
   constructor(props: Props, context: React.Context<any>) {
     super(props, context);
 
     this.state = {
       isOpen: false,
     };
+
+    this.hasSwitch = this.props.onSwitch !== undefined;
+    this.onSwitch = this.props.onSwitch !== undefined ? this.props.onSwitch : () => {};
   }
 
   toggle() {
@@ -32,20 +40,17 @@ export class QueryOptions extends React.PureComponent<Props, State> {
     return (
       <div className="gf-form gf-form--grow">
         <div className="query-options-switch">
-          <Switch css="" value={this.props.splitTs} onChange={event => this.props.onChangeSplitTs()} />
+          {this.hasSwitch && <Switch css="" value={this.props.switch} onChange={event => this.onSwitch()} />}
         </div>
 
         <div className="query-options">
           <Collapse
-            label="Split timeseries by label"
+            label={this.props.collapsibleLabel}
             collapsible={true}
             isOpen={this.state.isOpen}
             onToggle={() => this.toggle()}
           >
-            <p>Add aliasses for time, value and label for main columns. Label should be of string type</p>
-            <pre>
-              Example: SELECT t as <u>time</u>, v as <u>value</u>, user as <u>label</u> w, x FROM ....
-            </pre>
+            {this.props.collapsibleText}
           </Collapse>
         </div>
       </div>

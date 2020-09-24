@@ -188,27 +188,11 @@ export function buildAnnotationEvents(annotation: any, data: DataQueryResponseDa
   return events;
 }
 
-function getTemplateVariablesFromRequest(request: DataQueryRequest<ClickHouseQuery>): TemplateVariables {
-  const result: TemplateVariables = {};
-  const vars: TemplateVariables = {
-    interval: request.interval,
-    intervalMs: request.intervalMs,
-    maxDataPoints: request.maxDataPoints,
-    timezone: request.timezone,
-    from: request.range.from.unix(),
-    to: request.range.to.unix(),
+function getTimeRangeTemplateVariables(range: TimeRange): TemplateVariables {
+  return {
+    from: range.from.unix(),
+    to: range.to.unix(),
   };
-  const varKeys = Object.keys(vars);
-
-  for (let j = 0; j < varKeys.length; j++) {
-    const key = varKeys[j];
-    const value = vars[key];
-    if (value !== undefined) {
-      result[key] = value;
-    }
-  }
-
-  return result;
 }
 
 function getTemplateVariablesFromScopedVars(scopedVars: ScopedVars): TemplateVariables {
@@ -277,12 +261,16 @@ function addTemplateVariables(vars: TemplateVariables, otherVars: TemplateVariab
   return vars;
 }
 
-function getTemplateVariables(request: DataQueryRequest<ClickHouseQuery>): TemplateVariables {
-  const fromRequest = getTemplateVariablesFromRequest(request);
+function getTemplateVariables(request: DataQueryRequest): TemplateVariables {
+  const fromTimeRange = getTimeRangeTemplateVariables(request.range);
   const fromScopedVars = getTemplateVariablesFromScopedVars(request.scopedVars);
   const fromTemplateSrv = getTemplateVariablesFromTemplateSrv();
 
-  return addTemplateVariables(addTemplateVariables(fromRequest, fromScopedVars), fromTemplateSrv);
+  return addTemplateVariables(addTemplateVariables(fromTimeRange, fromScopedVars), fromTemplateSrv);
+}
+
+export function renderQuery(query: string, request: DataQueryRequest): string {
+  return Mustache.render(query, getTemplateVariables(request));
 }
 
 export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {
@@ -293,7 +281,7 @@ export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): Da
     let target = targets[0];
 
     if (!target.hide && target.query) {
-      target.query = Mustache.render(target.query, getTemplateVariables(request));
+      target.query = renderQuery(target.query, request);
       requestTargets.push(target);
     }
   }

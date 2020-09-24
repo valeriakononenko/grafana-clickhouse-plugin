@@ -1,11 +1,11 @@
 import React from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery } from '../../model';
+import { ClickHouseOptions, ClickHouseQuery, renderQuery } from '../../model';
 import { InlineFormLabel } from '@grafana/ui';
 import { QueryField } from './query-field';
 import '../../partials/style.css';
-import { QueryOptions } from './query-options';
+import { QueryOption } from './query-option';
 
 type Props = QueryEditorProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseOptions>;
 
@@ -24,6 +24,9 @@ export class QueryEditor extends React.PureComponent<Props> {
   }
 
   render() {
+    const request = this.props.data?.request;
+    const preloadedQuery = request ? renderQuery(this.props.query.query, request) : 'Loading ...';
+
     return (
       <div className="gf-form--grow">
         <div className="gf-form gf-form--grow">
@@ -40,7 +43,21 @@ export class QueryEditor extends React.PureComponent<Props> {
           />
         </div>
 
-        <QueryOptions splitTs={this.props.query.splitTs} onChangeSplitTs={() => this.onChangeSplitTs()} />
+        <QueryOption
+          switch={this.props.query.splitTs}
+          onSwitch={() => this.onChangeSplitTs()}
+          collapsibleLabel="Split time series by label"
+          collapsibleText={
+            <div>
+              <p>Add aliases for time, value and label for main columns. Label should be of string type</p>
+              <pre>
+                Example: SELECT t as <u>time</u>, v as <u>value</u>, user as <u>label</u> w, x FROM ....
+              </pre>
+            </div>
+          }
+        />
+
+        <QueryOption collapsibleLabel="Generated query" collapsibleText={<pre>{preloadedQuery}</pre>} />
       </div>
     );
   }
