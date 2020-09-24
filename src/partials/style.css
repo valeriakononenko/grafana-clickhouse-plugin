@@ -12,3 +12,11 @@
     padding: 10px 8px;
     width: 48px;
 }
+
+.query-variables-list {
+    padding: 0 40px 8px;
+}
+
+.query-variables-note {
+    padding: 0 20px;
+}
