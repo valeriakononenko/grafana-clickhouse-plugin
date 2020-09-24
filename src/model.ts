@@ -188,11 +188,27 @@ export function buildAnnotationEvents(annotation: any, data: DataQueryResponseDa
   return events;
 }
 
-function getTimeRangeTemplateVariables(range: TimeRange): TemplateVariables {
-  return {
-    from: range.from.unix(),
-    to: range.to.unix(),
+function getTemplateVariablesFromRequest(request: DataQueryRequest): TemplateVariables {
+  const result: TemplateVariables = {};
+  const vars: TemplateVariables = {
+    interval: request.interval,
+    intervalMs: request.intervalMs,
+    maxDataPoints: request.maxDataPoints,
+    timezone: request.timezone,
+    from: request.range.from.unix(),
+    to: request.range.to.unix(),
   };
+  const varKeys = Object.keys(vars);
+
+  for (let j = 0; j < varKeys.length; j++) {
+    const key = varKeys[j];
+    const value = vars[key];
+    if (value !== undefined) {
+      result[key] = value;
+    }
+  }
+
+  return result;
 }
 
 function getTemplateVariablesFromScopedVars(scopedVars: ScopedVars): TemplateVariables {
@@ -262,11 +278,11 @@ function addTemplateVariables(vars: TemplateVariables, otherVars: TemplateVariab
 }
 
 function getTemplateVariables(request: DataQueryRequest): TemplateVariables {
-  const fromTimeRange = getTimeRangeTemplateVariables(request.range);
+  const fromRequest = getTemplateVariablesFromRequest(request);
   const fromScopedVars = getTemplateVariablesFromScopedVars(request.scopedVars);
   const fromTemplateSrv = getTemplateVariablesFromTemplateSrv();
 
-  return addTemplateVariables(addTemplateVariables(fromTimeRange, fromScopedVars), fromTemplateSrv);
+  return addTemplateVariables(addTemplateVariables(fromRequest, fromScopedVars), fromTemplateSrv);
 }
 
 export function renderQuery(query: string, request: DataQueryRequest): string {

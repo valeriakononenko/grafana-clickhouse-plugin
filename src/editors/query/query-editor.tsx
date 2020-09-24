@@ -49,7 +49,7 @@ export class QueryEditor extends React.PureComponent<Props> {
           collapsibleLabel="Split time series by label"
           collapsibleText={
             <div>
-              <p>Add aliases for time, value and label for main columns. Label should be of string type</p>
+              <p>Add aliases `time`, `value` and `label` for main columns. Label should be of string type</p>
               <pre>
                 Example: SELECT t as <u>time</u>, v as <u>value</u>, user as <u>label</u> w, x FROM ....
               </pre>
