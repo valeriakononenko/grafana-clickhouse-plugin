@@ -10,11 +10,11 @@ type ClickHouseFrame struct {
 	Fields []*ClickHouseField
 }
 
-func NewFrame(refId string, name string, fieldsMeta []*FieldMeta) *ClickHouseFrame {
+func NewFrame(refId string, name string, fieldsMeta []*FieldMeta, tz FetchTZ) *ClickHouseFrame {
   fields:= make([]*ClickHouseField, len(fieldsMeta))
 
   for i, meta := range fieldsMeta {
-	fields[i] = NewField(meta.Name, meta.Type)
+	fields[i] = NewField(meta.Name, meta.Type, tz)
   }
 
   frame := &ClickHouseFrame{
@@ -36,11 +36,11 @@ func (f *ClickHouseFrame) getField(name string) *ClickHouseField {
   return nil
 }
 
-func (f *ClickHouseFrame) AddRow(row map[string]interface{}, timezone FetchTimeZone)  {
+func (f *ClickHouseFrame) AddRow(row map[string]interface{})  {
 	for key, value := range row {
 		field := f.getField(key)
 		if field != nil {
-			field.Append(value, timezone)
+			field.Append(value)
 		}
 	}
 }

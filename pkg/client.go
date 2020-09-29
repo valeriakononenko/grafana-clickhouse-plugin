@@ -7,6 +7,7 @@ import (
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "io/ioutil"
   "net/http"
+  "time"
 )
 
 type ClickHouseClient struct {
@@ -42,4 +43,14 @@ func (client *ClickHouseClient) Query(query string) (*Response, error) {
 	jsonErr := parseJson(body, &jsonResp); if jsonErr != nil { return onErr(jsonErr) }
 
 	return &jsonResp, nil
+}
+
+func (client *ClickHouseClient) FetchTimeZone() *time.Location {
+  res, err := client.Query(TimeZoneQuery)
+
+  if err == nil && res != nil && len(res.Data) > 0 && res.Data[0] != nil {
+	return ParseTimeZone(fmt.Sprintf("%v", res.Data[0][TimeZoneFieldName]))
+  }
+
+  return time.UTC
 }

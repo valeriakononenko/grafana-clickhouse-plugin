@@ -12,7 +12,8 @@ import (
   "time"
 )
 
-type FetchTimeZone func() *time.Location
+var dateLayout = "2006-01-02"
+var dateTimeLayout = dateLayout + " 15:04:05"
 
 func ParseTimeZone(tz string) *time.Location {
   location, err := time.LoadLocation(tz)
@@ -21,14 +22,6 @@ func ParseTimeZone(tz string) *time.Location {
 	return location
   } else {
 	return time.UTC
-  }
-}
-
-func fetchTimeZone(tz string, fetch FetchTimeZone) *time.Location {
-  if tz == "" {
-	return fetch()
-  } else {
-	return ParseTimeZone(tz)
   }
 }
 
@@ -132,7 +125,7 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
   return nil
 }
 
-func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone FetchTimeZone) *Value  {
+func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone *time.Location) *Value  {
   if strings.HasPrefix(valueType, "LowCardinality") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"LowCardinality("), ")"),
 	  value, fieldName, nullable, timezone)
@@ -149,21 +142,15 @@ func ParseValue(valueType string, value interface{}, fieldName string, nullable 
 	  return parseUInt64Value(value, fieldName, nullable)
 	case "Int64":
 	  return parseInt64Value(value, fieldName, nullable)
-	case "Date":
-	  return parseTimeValue(value, fieldName, nullable, dateLayout, timezone())
-	case "DateTime":
-	  return parseTimeValue(value, fieldName, nullable, dateTimeLayout, timezone())
 	default:
 	  if strings.HasPrefix(valueType, "Decimal") {
 		return parseFloatValue(value, fieldName, nullable)
 	  } else if strings.HasPrefix(valueType, "FixedString") || strings.HasPrefix(valueType, "Enum") {
 		return parseStringValue(value, fieldName, nullable)
-	  } else if strings.HasPrefix(valueType, "Date('") {
-		return parseTimeValue(value, fieldName, nullable, dateLayout,
-		  fetchTimeZone(valueType[6: len(valueType) -2], timezone))
-	  } else if strings.HasPrefix(valueType, "DateTime('") {
-		return parseTimeValue(value, fieldName, nullable, dateTimeLayout,
-		  fetchTimeZone(valueType[10: len(valueType) -2], timezone))
+	  } else if strings.HasPrefix(valueType, dateTimePrefix) {
+		return parseTimeValue(value, fieldName, nullable, dateTimeLayout, timezone)
+	  } else if strings.HasPrefix(valueType, datePrefix) {
+		return parseTimeValue(value, fieldName, nullable, dateLayout, timezone)
 	  } else {
 		backend.Logger.Warn(
 		  fmt.Sprintf("Value [%v] has compound type [%v] and will be returned as string", value, valueType))

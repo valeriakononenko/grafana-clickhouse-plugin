@@ -73,7 +73,6 @@ export const Default = {
   BROWSER_TIMEZONE: 'browser',
   ALL_VARIABLE: '$__all',
   TIMEZONE_OFFSET: 'Etc/GMT',
-  PRELOADED_QUERY: 'Loading ...',
 };
 
 function defaultClickHouseQuery(q: Partial<ClickHouseQuery>): ClickHouseQuery {
@@ -288,7 +287,7 @@ export function preloadQuery(query: string, request: DataQueryRequest | undefine
     console.error('Unable to load query: ', e);
   }
 
-  return Default.PRELOADED_QUERY;
+  return query;
 }
 
 export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {

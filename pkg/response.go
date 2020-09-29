@@ -1,14 +1,8 @@
 package main
 
-import (
-  "strings"
-)
-
 var SplitLabelFieldName = "label"
 var SplitTimeFieldName = "time"
 var SplitValueFieldName = "value"
-
-var TimeFieldMarker = "Date"
 
 func getLabel(data map[string]interface{}, defaultLabel string) string  {
   labelValue, okValue := data[SplitLabelFieldName]
@@ -57,7 +51,7 @@ func (r *Response) getTimeSeriesMeta(splitTs bool) []*FieldMeta {
   return nil
 }
 
-func (r *Response) ToFrames(refId string, splitTs bool, timezone FetchTimeZone) []*ClickHouseFrame {
+func (r *Response) ToFrames(refId string, splitTs bool, tz FetchTZ) []*ClickHouseFrame {
   meta := r.getTimeSeriesMeta(splitTs)
 
   if meta != nil {
@@ -68,11 +62,11 @@ func (r *Response) ToFrames(refId string, splitTs bool, timezone FetchTimeZone) 
 	  frame, ok := frames[label]
 
 	  if !ok {
-		frame = NewFrame(refId, label, meta)
+		frame = NewFrame(refId, label, meta, tz)
 		frames[label] = frame
 	  }
 
-	  frame.AddRow(row, timezone)
+	  frame.AddRow(row)
 	}
 
 	framesList := make([]*ClickHouseFrame, len(frames))
@@ -85,22 +79,12 @@ func (r *Response) ToFrames(refId string, splitTs bool, timezone FetchTimeZone) 
 
 	return framesList
   } else {
-	frame := NewFrame(refId, refId, r.Meta)
+	frame := NewFrame(refId, refId, r.Meta, tz)
 
 	for _, row := range r.Data {
-	  frame.AddRow(row, timezone)
+	  frame.AddRow(row)
 	}
 
 	return []*ClickHouseFrame{frame}
   }
-}
-
-func (r *Response) HasTime() bool {
-  for _, meta := range r.Meta {
-    if strings.Contains(meta.Type, TimeFieldMarker) {
-      return true
-	}
-  }
-
-  return false
 }

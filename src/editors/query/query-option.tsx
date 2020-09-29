@@ -23,7 +23,7 @@ export class QueryOption extends React.PureComponent<Props, State> {
 
     this.state = {
       isOpen: false,
-      collapsibleText: '',
+      collapsibleText: this.props.collapsibleText(),
     };
 
     this.hasSwitch = this.props.onSwitch !== undefined;

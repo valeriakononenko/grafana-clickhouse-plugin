@@ -1,13 +1,11 @@
 package main
 
 import (
-  "fmt"
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
   "github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
   "github.com/grafana/grafana-plugin-sdk-go/data"
   "golang.org/x/net/context"
-  "time"
 )
 
 func GetDatasourceServeOpts() datasource.ServeOpts {
@@ -36,22 +34,6 @@ func (ds *ClickHouseDatasource) getClient(ctx backend.PluginContext) (*ClickHous
 	}, nil
 }
 
-func (ds *ClickHouseDatasource) getTimeZone(client *ClickHouseClient, isDefault bool) *time.Location {
-  if !isDefault {
-	res, err := client.Query(TimeZoneQuery); if err != nil { return time.UTC }
-
-	if len(res.Data) > 0 {
-	  var tz = res.Data[0][TimeZoneFieldName]
-
-	  if tz != nil {
-		return ParseTimeZone(fmt.Sprintf("%v", tz))
-	  }
-	}
-  }
-
-  return time.UTC
-}
-
 func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) backend.DataResponse  {
 
 	onErr := func(err error) backend.DataResponse {
@@ -63,11 +45,7 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
 
-	timezone := func() *time.Location {
-	  return ds.getTimeZone(client, !res.HasTime())
-	}
-
-	frames := res.ToFrames(query.RefId, query.SplitTs, timezone)
+	frames := res.ToFrames(query.RefId, query.SplitTs, client.FetchTimeZone)
 
 	response := backend.DataResponse{
 		Frames: make([]*data.Frame, len(frames)),
