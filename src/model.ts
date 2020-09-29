@@ -281,10 +281,14 @@ function renderQuery(query: string, request: DataQueryRequest): string {
 
 export function preloadQuery(query: string, request: DataQueryRequest | undefined): string {
   try {
-    return request !== undefined ? renderQuery(query, request) : Default.PRELOADED_QUERY;
+    if (request !== undefined) {
+      return renderQuery(query, request);
+    }
   } catch (e) {
-    return Default.PRELOADED_QUERY;
+    console.error('Unable to load query: ', e);
   }
+
+  return Default.PRELOADED_QUERY;
 }
 
 export function buildDataRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {

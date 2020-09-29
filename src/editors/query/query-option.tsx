@@ -6,11 +6,12 @@ type Props = {
   switch?: boolean;
   onSwitch?: () => void;
   collapsibleLabel: string;
-  collapsibleText: ReactNode;
+  collapsibleText: () => ReactNode;
 };
 
 type State = {
   isOpen: boolean;
+  collapsibleText: ReactNode;
 };
 
 export class QueryOption extends React.PureComponent<Props, State> {
@@ -22,6 +23,7 @@ export class QueryOption extends React.PureComponent<Props, State> {
 
     this.state = {
       isOpen: false,
+      collapsibleText: '',
     };
 
     this.hasSwitch = this.props.onSwitch !== undefined;
@@ -30,8 +32,10 @@ export class QueryOption extends React.PureComponent<Props, State> {
 
   toggle() {
     this.setState((prevState: State) => {
+      const isOpen = !prevState.isOpen;
       return {
-        isOpen: !prevState.isOpen,
+        isOpen: isOpen,
+        collapsibleText: isOpen ? this.props.collapsibleText() : prevState.collapsibleText,
       };
     });
   }
@@ -50,7 +54,7 @@ export class QueryOption extends React.PureComponent<Props, State> {
             isOpen={this.state.isOpen}
             onToggle={() => this.toggle()}
           >
-            <div className="query-option-collapsible-text">{this.props.collapsibleText}</div>
+            <div className="query-option-collapsible-text">{this.state.collapsibleText}</div>
           </Collapse>
         </div>
       </div>
