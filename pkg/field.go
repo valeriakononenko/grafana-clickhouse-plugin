@@ -43,6 +43,7 @@ func fetchTimeZone(fieldType string, loadTZ FetchTZ) *time.Location {
 func NewField(name string, fieldType string, tz FetchTZ) *ClickHouseField {
 	return &ClickHouseField{
 		Name: name,
+		DisplayName: name,
 		Type: fieldType,
 		Min: math.NaN(),
 		Max: math.NaN(),
@@ -53,10 +54,15 @@ func NewField(name string, fieldType string, tz FetchTZ) *ClickHouseField {
 type ClickHouseField struct {
 	Field *data.Field
 	Name string
+	DisplayName string
 	Type string
 	Min float64
 	Max float64
 	TimeZone *time.Location
+}
+
+func (f *ClickHouseField) UpdateDisplayName(name string)  {
+  f.DisplayName = name
 }
 
 func (f *ClickHouseField) Append(value interface{}) {
@@ -81,7 +87,7 @@ func (f *ClickHouseField) toFrameField() *data.Field  {
 	if f.Field != nil {
 		if f.Field.Config == nil {
 			f.Field.SetConfig(&data.FieldConfig{
-				DisplayName: f.Field.Name,
+				DisplayName: f.DisplayName,
 			})
 		}
 

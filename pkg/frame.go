@@ -26,6 +26,14 @@ func NewFrame(refId string, name string, fieldsMeta []*FieldMeta, tz FetchTZ) *C
   return frame
 }
 
+func (f *ClickHouseFrame) UpdateValueFieldDisplayName(name string) {
+  valueField := f.getField(SplitValueFieldName)
+
+  if valueField != nil {
+    valueField.UpdateDisplayName(name)
+  }
+}
+
 func (f *ClickHouseFrame) getField(name string) *ClickHouseField {
   for _, field := range f.Fields {
 	if field != nil && field.Name == name {
@@ -48,8 +56,8 @@ func (f *ClickHouseFrame) AddRow(row map[string]interface{})  {
 func (f *ClickHouseFrame) ToDataFrame() *data.Frame  {
 	fields := make([]*data.Field, len(f.Fields))
 
-	for i, f := range f.Fields {
-		fields[i] = f.toFrameField()
+	for i, field := range f.Fields {
+	  fields[i] = field.toFrameField()
 	}
 
 	frame := &data.Frame{
