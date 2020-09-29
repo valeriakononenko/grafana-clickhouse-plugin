@@ -44,11 +44,7 @@ func (ds *ClickHouseDatasource) getTimeZone(client *ClickHouseClient, isDefault 
 	  var tz = res.Data[0][TimeZoneFieldName]
 
 	  if tz != nil {
-		location, err := time.LoadLocation(fmt.Sprintf("%v", tz))
-
-		if err == nil {
-		  return location
-		}
+		return ParseTimeZone(fmt.Sprintf("%v", tz))
 	  }
 	}
   }
@@ -67,7 +63,9 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
 
-	timezone := ds.getTimeZone(client, !res.HasTime())
+	timezone := func() *time.Location {
+	  return ds.getTimeZone(client, !res.HasTime())
+	}
 
 	frames := res.ToFrames(query.RefId, query.SplitTs, timezone)
 
