@@ -6,6 +6,8 @@ import { InlineFormLabel } from '@grafana/ui';
 import { QueryField } from './query-field';
 import '../../partials/style.css';
 import { QueryOption } from './query-option';
+import { QueryTemplateVariables } from './query-template-variables';
+import { QuerySplitExample } from './query-split-example';
 
 type Props = QueryEditorProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseOptions>;
 
@@ -53,14 +55,7 @@ export class QueryEditor extends React.PureComponent<Props> {
           switch={this.props.query.splitTs}
           onSwitch={() => this.onChangeSplitTs()}
           collapsibleLabel="Split time series by label"
-          collapsibleText={() => (
-            <div>
-              <p>Add aliases `time`, `value` and `label` for main columns. Label should be of string type</p>
-              <pre>
-                Example: SELECT t as <u>time</u>, v as <u>value</u>, user as <u>label</u> w, x FROM ....
-              </pre>
-            </div>
-          )}
+          collapsibleText={QuerySplitExample}
         />
 
         <QueryOption
@@ -70,26 +65,7 @@ export class QueryEditor extends React.PureComponent<Props> {
 
         <QueryOption
           collapsibleLabel="Template variables"
-          collapsibleText={() => (
-            <div>
-              <div>
-                <p className="query-variables-note-header">
-                  Note! Use triple curly braces to avoid escaping. For timezone = 'Etc/GMT-3':
-                </p>
-                <pre>
-                  Example: SELECT {'{{{'}timezone{'}}}'}
-                </pre>
-              </div>
-
-              {variablesList.length > 0 && (
-                <ul className="query-variables-list">
-                  {variablesList.map(variable => (
-                    <li>{variable}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
+          collapsibleText={() => QueryTemplateVariables(variablesList)}
         />
       </div>
     );

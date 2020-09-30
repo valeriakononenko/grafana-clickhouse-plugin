@@ -51,6 +51,10 @@ export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery,
       .catch(_ => []);
   }
 
+  targetContainsTemplate(query: ClickHouseQuery): boolean {
+    return query.query.search('{{') !== -1;
+  }
+
   private _query(request: DataQueryRequest<ClickHouseQuery>): Promise<DataQueryResponse> {
     return request.targets.length
       ? super.query(buildDataRequest(request)).toPromise()

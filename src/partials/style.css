@@ -21,6 +21,12 @@
     padding-left: 16px;
 }
 
-.query-variables-note-header {
-    margin-bottom: 4px;
+.query-variables-header {
+    display: flex;
+    flex-flow: row wrap;
+    height: 32px;
+}
+
+.query-variables-header-text {
+    margin-left: 8px;
 }
