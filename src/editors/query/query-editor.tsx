@@ -1,13 +1,14 @@
 import React from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery, getTemplateVariables, preloadQuery } from '../../model';
+import { ClickHouseOptions, ClickHouseQuery } from '../../model/model';
 import { InlineFormLabel } from '@grafana/ui';
 import { QueryField } from './query-field';
 import '../../partials/style.css';
 import { QueryOption } from './query-option';
 import { QueryTemplateVariables } from './query-template-variables';
 import { QuerySplitExample } from './query-split-example';
+import { getTemplateVariables, preloadQuery } from '../../model/templating';
 
 type Props = QueryEditorProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseOptions>;
 

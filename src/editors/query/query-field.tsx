@@ -1,4 +1,4 @@
-import { Default } from '../../model';
+import { Default } from '../../model/model';
 import React from 'react';
 import AceEditor from 'react-ace';
 

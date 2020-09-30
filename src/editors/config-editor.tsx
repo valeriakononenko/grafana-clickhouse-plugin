@@ -1,6 +1,6 @@
 import React, { FormEvent, PureComponent } from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { ClickHouseOptions } from '../model';
+import { ClickHouseOptions } from '../model/model';
 import { InlineFormLabel, Input } from '@grafana/ui';
 
 type State = {

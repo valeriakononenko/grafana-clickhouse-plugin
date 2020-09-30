@@ -1,4 +1,4 @@
-import { Default } from '../model';
+import { Default } from '../model/model';
 
 export class AnnotationEditor {
   static templateUrl = 'partials/annotations-editor.html';
