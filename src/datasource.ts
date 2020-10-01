@@ -15,9 +15,10 @@ import { buildDataQueryRequest, handleDataQueryResponse } from './model/query';
 import { ignoreError } from './model/defaults';
 import { DatasourceCache } from './model/datasource-cache';
 
+
 export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery, ClickHouseOptions> {
   private cache: DatasourceCache;
-  private static cacheMs: number = 30 * 1000;
+  private static cacheMs: number = 10 * 1000;
 
   constructor(instanceSettings: DataSourceInstanceSettings<ClickHouseOptions>) {
     super(instanceSettings);
