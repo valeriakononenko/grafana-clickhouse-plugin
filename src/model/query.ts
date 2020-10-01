@@ -1,7 +1,7 @@
 import { DataFrame, DataQueryRequest, DataQueryResponse } from '@grafana/data';
 import { ClickHouseQuery } from './model';
 import { renderQuery } from './templating';
-import { split } from './split';
+import { FrameAccessor } from './frame-accessor';
 
 type HandleDataQueryResponse = (res: DataQueryResponse) => DataQueryResponse;
 
@@ -30,7 +30,7 @@ export function handleDataQueryResponse(targets: ClickHouseQuery[]): HandleDataQ
     targets.forEach(t => {
       const frame = response.data.find(d => d.refId === t.refId);
       if (frame && t.splitTs) {
-        split(frame).forEach(f => data.push(f));
+        new FrameAccessor(frame).split().forEach(f => data.push(f));
       } else {
         data.push(frame);
       }

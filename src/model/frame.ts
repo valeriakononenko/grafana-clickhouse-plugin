@@ -1,22 +1,19 @@
-import { DataFrame, FieldType, MISSING_VALUE, MutableDataFrame, Field as DataField } from '@grafana/data';
+import { DataFrame, FieldType, MISSING_VALUE, MutableDataFrame } from '@grafana/data';
 import { Field } from './field';
-import { FrameAccessor } from './frame-accessor';
 
 type Values = { [key: string]: any };
 
-export class Frame {
-  private readonly accessor: FrameAccessor;
-  private readonly fields: Array<Field<Values>>;
+export class Frame implements DataFrame {
+  readonly fields: Array<Field<Values>>;
+  refId?: string;
+  name?: string;
   length: number;
 
   constructor(frame: DataFrame) {
-    this.accessor = new FrameAccessor(frame);
+    this.refId = frame.refId;
+    this.name = frame.name;
     this.fields = [];
     this.length = 0;
-  }
-
-  getField(name: string): DataField<any> | null {
-    return this.accessor.getField(name);
   }
 
   addField(name: string, type: FieldType, displayName: string): Field<Values> {
@@ -45,8 +42,8 @@ export class Frame {
       fields: this.fields,
       length: this.length,
       meta: undefined,
-      name: this.accessor.name,
-      refId: this.accessor.refId,
+      name: this.name,
+      refId: this.refId,
     });
   }
 }
