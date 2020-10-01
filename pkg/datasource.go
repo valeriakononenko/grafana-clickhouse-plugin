@@ -45,7 +45,7 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 
 	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
 
-	frames := res.ToFrames(query.RefId, query.SplitTs, client.FetchTimeZone)
+	frames := res.ToFrames(query.RefId, false, client.FetchTimeZone)
 
 	response := backend.DataResponse{
 		Frames: make([]*data.Frame, len(frames)),

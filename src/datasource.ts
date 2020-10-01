@@ -6,11 +6,13 @@ import {
   DataSourceInstanceSettings,
   MetricFindValue,
 } from '@grafana/data';
-import { buildDataQueryRequest, ignoreError, ClickHouseOptions, ClickHouseQuery } from './model/model';
+import { ClickHouseOptions, ClickHouseQuery } from './model/model';
 import { Observable, from } from 'rxjs';
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { buildAnnotationEvents, buildAnnotationRequest } from './model/annotation';
 import { buildMetricFindValues, buildMetricQueryRequest } from './model/metric';
+import { buildDataQueryRequest, handleDataQueryResponse } from './model/query';
+import { ignoreError } from './model/defaults';
 
 export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery, ClickHouseOptions> {
   constructor(instanceSettings: DataSourceInstanceSettings<ClickHouseOptions>) {
@@ -18,7 +20,7 @@ export class ClickHouseDatasource extends DataSourceWithBackend<ClickHouseQuery,
   }
 
   query(request: DataQueryRequest<ClickHouseQuery>): Observable<DataQueryResponse> {
-    return from(this._query(request));
+    return from(this._query(request).then(handleDataQueryResponse(request.targets)));
   }
 
   annotationQuery(request: AnnotationQueryRequest<ClickHouseQuery>): Promise<AnnotationEvent[]> {

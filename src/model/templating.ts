@@ -1,7 +1,7 @@
 import { DataQueryRequest } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import Mustache from 'mustache';
-import { Default } from './model';
+import { Default } from './defaults';
 
 type TemplateVariables = { [key: string]: any };
 

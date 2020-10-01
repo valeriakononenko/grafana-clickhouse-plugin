@@ -6,7 +6,8 @@ import {
   DataQueryResponse,
   isDataFrame,
 } from '@grafana/data';
-import { ClickHouseQuery, defaultClickHouseQuery, defaultQueryRequest } from './model';
+import { ClickHouseQuery } from './model';
+import { defaultClickHouseQuery, defaultQueryRequest } from './defaults';
 
 type QueryResponseToAnnotationEvents = (res: DataQueryResponse) => AnnotationEvent[];
 

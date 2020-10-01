@@ -1,5 +1,6 @@
 import { DataQueryRequest, DataQueryResponse, FieldType, isDataFrame, MetricFindValue } from '@grafana/data';
-import { ClickHouseQuery, defaultClickHouseQuery, defaultQueryRequest } from './model';
+import { defaultClickHouseQuery, defaultQueryRequest } from './defaults';
+import { ClickHouseQuery } from './model';
 
 function toLeadingZeroPositiveNumber(n: number): string {
   if (n < 10) {
