@@ -55,7 +55,7 @@ type ClickHouseField struct {
 }
 
 func (f *ClickHouseField) Append(value interface{}) {
-	v := ParseValue(f.Type, value, f.Name, false, f.TimeZone)
+	v := ParseValue(f.Type, value, f.Name, f.TimeZone)
 	if v == nil {
 	  backend.Logger.Warn(fmt.Sprintf("Value [%v / %v] wouln't be added to Field", value, f.Type))
 	} else {
