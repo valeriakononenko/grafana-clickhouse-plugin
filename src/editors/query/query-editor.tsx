@@ -55,7 +55,7 @@ export class QueryEditor extends React.PureComponent<Props> {
         <QueryOption
           switch={this.props.query.splitTs}
           onSwitch={() => this.onChangeSplitTs()}
-          collapsibleLabel="Split time series by label"
+          collapsibleLabel="Split time series"
           collapsibleText={QuerySplitExample}
         />
 
