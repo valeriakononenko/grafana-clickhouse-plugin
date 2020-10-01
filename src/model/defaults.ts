@@ -55,9 +55,9 @@ export function defaultQueryRequest(qr: Partial<DataQueryRequest<ClickHouseQuery
   };
 }
 
-export function ignoreError(result: any) {
+export function ignoreError(result: any, msg: string) {
   return (error: any) => {
-    console.error(error);
+    console.error(msg, error);
 
     if (error && error.isHandled) {
       error.isHandled = true;

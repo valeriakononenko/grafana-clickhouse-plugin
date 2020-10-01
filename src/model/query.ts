@@ -1,23 +1,9 @@
-import { DataFrame, DataQueryRequest, DataQueryResponse, toDataFrame } from '@grafana/data';
+import { DataFrame, DataQueryRequest, DataQueryResponse } from '@grafana/data';
 import { ClickHouseQuery } from './model';
 import { renderQuery } from './templating';
 import { split } from './split';
 
 type HandleDataQueryResponse = (res: DataQueryResponse) => DataQueryResponse;
-
-type TargetsMap = { [key: string]: ClickHouseQuery };
-
-function mapTargets(targets: ClickHouseQuery[]): TargetsMap {
-  const map: TargetsMap = {};
-
-  for (let i = 0; i < targets.length; i++) {
-    const t = targets[i];
-
-    map[t.refId] = t;
-  }
-
-  return map;
-}
 
 export function buildDataQueryRequest(request: DataQueryRequest<ClickHouseQuery>): DataQueryRequest<ClickHouseQuery> {
   const requestTargets: ClickHouseQuery[] = [];
@@ -39,14 +25,11 @@ export function buildDataQueryRequest(request: DataQueryRequest<ClickHouseQuery>
 
 export function handleDataQueryResponse(targets: ClickHouseQuery[]): HandleDataQueryResponse {
   return (response: DataQueryResponse) => {
-    const targetsMap = mapTargets(targets);
     const data: DataFrame[] = [];
 
-    response.data.forEach(d => {
-      const frame = toDataFrame(d);
-      const target = targetsMap[frame.refId || frame.name || ''];
-
-      if (target && target.splitTs) {
+    targets.forEach(t => {
+      const frame = response.data.find(d => d.refId === t.refId);
+      if (frame && t.splitTs) {
         split(frame).forEach(f => data.push(f));
       } else {
         data.push(frame);
@@ -54,7 +37,6 @@ export function handleDataQueryResponse(targets: ClickHouseQuery[]): HandleDataQ
     });
 
     response.data = data;
-
     return response;
   };
 }
