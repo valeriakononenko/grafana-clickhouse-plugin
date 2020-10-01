@@ -5,7 +5,6 @@ import (
   "fmt"
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "github.com/grafana/grafana-plugin-sdk-go/data"
-  "math"
   "reflect"
   "strconv"
   "strings"
@@ -30,9 +29,9 @@ func parseFloatValue(value interface{}, fieldName string, nullable bool) *Value 
     fv := reflect.ValueOf(value).Float()
 
     if nullable {
-	  return NewValue(&fv, fieldName, []*float64{}, fv)
+	  return NewValue(&fv, fieldName, []*float64{})
 	} else {
-	  return NewValue(fv, fieldName, []float64{}, fv)
+	  return NewValue(fv, fieldName, []float64{})
 	}
   } else if nullable {
 	return NullValue(fieldName, []*float64{})
@@ -46,9 +45,9 @@ func parseStringValue(value interface{}, fieldName string, nullable bool) *Value
 	str := reflect.ValueOf(value).String()
 
 	if nullable {
-	  return NewValue(&str, fieldName, []*string{}, math.NaN())
+	  return NewValue(&str, fieldName, []*string{})
 	} else {
-	  return NewValue(str, fieldName, []string{}, math.NaN())
+	  return NewValue(str, fieldName, []string{})
 	}
   } else if nullable {
 	return NullValue(fieldName, []*string{})
@@ -63,9 +62,9 @@ func parseUInt64Value(value interface{}, fieldName string, nullable bool) *Value
 
 	if err == nil {
 	  if nullable {
-		return NewValue(&ui64v, fieldName, []*uint64{}, float64(ui64v))
+		return NewValue(&ui64v, fieldName, []*uint64{})
 	  } else {
-		return NewValue(ui64v, fieldName, []uint64{}, float64(ui64v))
+		return NewValue(ui64v, fieldName, []uint64{})
 	  }
 	}
   } else if nullable {
@@ -81,9 +80,9 @@ func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value 
 
 	if err == nil {
 	  if nullable {
-		return NewValue(&i64v, fieldName, []*int64{}, float64(i64v))
+		return NewValue(&i64v, fieldName, []*int64{})
 	  } else {
-		return NewValue(i64v, fieldName, []int64{}, float64(i64v))
+		return NewValue(i64v, fieldName, []int64{})
 	  }
 	}
   } else if nullable {
@@ -101,9 +100,9 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
 
 	if err == nil {
 	  if nullable {
-		return NewValue(&t, fieldName, []*time.Time{}, float64(t.Unix()))
+		return NewValue(&t, fieldName, []*time.Time{})
 	  } else {
-		return NewValue(t, fieldName, []time.Time{}, float64(t.Unix()))
+		return NewValue(t, fieldName, []time.Time{})
 	  }
 	} else {
 	  i64v, err := strconv.ParseInt(strValue, 10, 64)
@@ -112,9 +111,9 @@ func parseTimeValue(value interface{}, fieldName string, nullable bool, layout s
 		timeValue := time.Unix(i64v, i64v)
 
 		if nullable {
-		  return NewValue(&timeValue, fieldName, []*time.Time{}, float64(timeValue.Unix()))
+		  return NewValue(&timeValue, fieldName, []*time.Time{})
 		} else {
-		  return NewValue(timeValue, fieldName, []time.Time{}, float64(timeValue.Unix()))
+		  return NewValue(timeValue, fieldName, []time.Time{})
 		}
 	  }
 	}
@@ -170,23 +169,17 @@ func ParseValue(valueType string, value interface{}, fieldName string, nullable 
 }
 
 func NullValue(fieldName string, fieldValues interface{}) *Value {
-  return &Value{
-	Val: nil,
-	Field: data.NewField(fieldName, nil, fieldValues),
-	Float: math.NaN(),
-  }
+  return NewValue(nil, fieldName, fieldValues)
 }
 
-func NewValue(value interface{}, fieldName string, fieldValues interface{}, floatValue float64) *Value {
+func NewValue(value interface{}, fieldName string, fieldValues interface{}) *Value {
   return &Value{
 	Val: value,
 	Field: data.NewField(fieldName, nil, fieldValues),
-	Float: floatValue,
   }
 }
 
 type Value struct {
   Val interface{}
   Field *data.Field
-  Float float64
 }
