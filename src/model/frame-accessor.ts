@@ -94,24 +94,26 @@ export class FrameAccessor {
           const field = this.fields[j];
           const name = field.name;
 
-          if (!fm[name]) {
-            const newFrame = new Frame({
-              fields: [],
-              length: 0,
-              refId: this.refId,
-              name: name,
+          if (name !== SplitFields.TIME) {
+            if (!fm[name]) {
+              const newFrame = new Frame({
+                fields: [],
+                length: 0,
+                refId: this.refId,
+                name: name,
+              });
+
+              newFrame.addField(SplitFields.TIME, this.timeField.type, SplitFields.TIME);
+              newFrame.addField(SplitFields.VALUE, field.type, name);
+              fm[name] = newFrame;
+            }
+
+            const f = fm[name];
+            f.add({
+              [SplitFields.TIME]: time,
+              [SplitFields.VALUE]: field.values.get(i),
             });
-
-            newFrame.addField(SplitFields.TIME, this.timeField.type, SplitFields.TIME);
-            newFrame.addField(SplitFields.VALUE, field.type, name);
-            fm[name] = newFrame;
           }
-
-          const f = fm[name];
-          f.add({
-            [SplitFields.TIME]: time,
-            [SplitFields.VALUE]: field.values.get(i),
-          });
         }
       }
 
