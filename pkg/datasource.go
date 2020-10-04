@@ -47,7 +47,7 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 	response := backend.DataResponse{}
 
 	if frame != nil {
-		response.Frames = []*data.Frame{frame.ToDataFrame()}
+		response.Frames = []*data.Frame{frame}
 	}
 
 	return response

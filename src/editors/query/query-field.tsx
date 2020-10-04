@@ -17,14 +17,10 @@ export class QueryField extends React.PureComponent<Props> {
     loadAce();
   }
 
-  private onChange = (query: string): void => {
+  private onChangeQuery = (query: string): void => {
     if (query && query !== this.props.query) {
       this.props.onChange(query);
     }
-  };
-
-  private runQuery = (): void => {
-    this.props.onRunQuery();
   };
 
   render() {
@@ -38,8 +34,8 @@ export class QueryField extends React.PureComponent<Props> {
         <AceEditor
           mode="clickhouse"
           theme={config.theme.isDark ? 'dracula' : 'github'}
-          onChange={this.onChange}
-          onBlur={this.runQuery}
+          onChange={(query: string) => this.onChangeQuery(query)}
+          onBlur={() => this.props.onRunQuery()}
           placeholder="Enter ClickHouse query"
           value={query}
           height={heightPx}
