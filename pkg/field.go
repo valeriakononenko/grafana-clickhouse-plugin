@@ -4,7 +4,6 @@ import (
   "fmt"
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "github.com/grafana/grafana-plugin-sdk-go/data"
-  "math"
   "strings"
   "time"
 )
@@ -43,62 +42,27 @@ func fetchTimeZone(fieldType string, loadTZ FetchTZ) *time.Location {
 func NewField(name string, fieldType string, tz FetchTZ) *ClickHouseField {
 	return &ClickHouseField{
 		Name: name,
-		DisplayName: name,
 		Type: fieldType,
-		Min: math.NaN(),
-		Max: math.NaN(),
 		TimeZone: fetchTimeZone(fieldType, tz),
 	}
 }
 
 type ClickHouseField struct {
-	Field *data.Field
+	FrameField *data.Field
 	Name string
-	DisplayName string
 	Type string
-	Min float64
-	Max float64
 	TimeZone *time.Location
 }
 
-func (f *ClickHouseField) UpdateDisplayName(name string)  {
-  f.DisplayName = name
-}
-
 func (f *ClickHouseField) Append(value interface{}) {
-	v := ParseValue(f.Type, value, f.Name, false, f.TimeZone)
+	v := ParseValue(f.Type, value, f.Name, f.TimeZone)
 	if v == nil {
 	  backend.Logger.Warn(fmt.Sprintf("Value [%v / %v] wouln't be added to Field", value, f.Type))
 	} else {
-	  if f.Field == nil {
-	    f.Field = v.Field
+	  if f.FrameField == nil {
+	    f.FrameField = v.Field
 	  }
 
-	  f.Field.Append(v.Val)
-
-	  if !math.IsNaN(v.Float) {
-	    f.Min = math.Min(v.Float, f.Min)
-	    f.Max = math.Max(v.Float, f.Max)
-	  }
+	  f.FrameField.Append(v.Val)
 	}
-}
-
-func (f *ClickHouseField) toFrameField() *data.Field  {
-	if f.Field != nil {
-		if f.Field.Config == nil {
-			f.Field.SetConfig(&data.FieldConfig{
-				DisplayName: f.DisplayName,
-			})
-		}
-
-		if !math.IsNaN(f.Min) {
-			f.Field.Config.SetMin(f.Min)
-		}
-
-		if !math.IsNaN(f.Max) {
-			f.Field.Config.SetMax(f.Max)
-		}
-	}
-
-	return f.Field
 }

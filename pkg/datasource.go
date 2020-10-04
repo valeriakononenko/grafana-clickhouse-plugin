@@ -42,19 +42,12 @@ func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) b
 	}
 
 	client, err := ds.getClient(ctx); if err != nil { return onErr(err) }
-
 	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
+	frame := res.toFrame(query.RefId, client.FetchTimeZone)
+	response := backend.DataResponse{}
 
-	frames := res.ToFrames(query.RefId, query.SplitTs, client.FetchTimeZone)
-
-	response := backend.DataResponse{
-		Frames: make([]*data.Frame, len(frames)),
-	}
-
-	for i, frame := range frames {
-	  if frame != nil {
-		response.Frames[i] = frame.ToDataFrame()
-	  }
+	if frame != nil {
+		response.Frames = []*data.Frame{frame}
 	}
 
 	return response

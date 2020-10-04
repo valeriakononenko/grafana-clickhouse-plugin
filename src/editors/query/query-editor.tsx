@@ -1,13 +1,14 @@
 import React from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { ClickHouseDatasource } from '../../datasource';
-import { ClickHouseOptions, ClickHouseQuery, getTemplateVariables, preloadQuery } from '../../model';
+import { ClickHouseOptions, ClickHouseQuery } from '../../model/model';
 import { InlineFormLabel } from '@grafana/ui';
 import { QueryField } from './query-field';
 import '../../partials/style.css';
 import { QueryOption } from './query-option';
 import { QueryTemplateVariables } from './query-template-variables';
 import { QuerySplitExample } from './query-split-example';
+import { getTemplateVariables, preloadQuery } from '../../model/templating';
 
 type Props = QueryEditorProps<ClickHouseDatasource, ClickHouseQuery, ClickHouseOptions>;
 
@@ -46,7 +47,6 @@ export class QueryEditor extends React.PureComponent<Props> {
             onBlur={() => this.onRunQuery()}
             onChange={(q: string) => this.onChangeQuery(q)}
             onRunQuery={() => this.onRunQuery()}
-            splitTs={this.props.query.splitTs}
             portalOrigin=""
           />
         </div>
@@ -54,7 +54,7 @@ export class QueryEditor extends React.PureComponent<Props> {
         <QueryOption
           switch={this.props.query.splitTs}
           onSwitch={() => this.onChangeSplitTs()}
-          collapsibleLabel="Split time series by label"
+          collapsibleLabel="Split time series"
           collapsibleText={QuerySplitExample}
         />
 

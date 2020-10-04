@@ -1,4 +1,4 @@
-import { Default } from '../../model';
+import { Default } from '../../model/defaults';
 import React from 'react';
 import AceEditor from 'react-ace';
 
@@ -7,7 +7,6 @@ import { QueryFieldProps } from '@grafana/ui/components/QueryField/QueryField';
 import { loadAce } from '../ace/loader';
 
 interface Props extends QueryFieldProps {
-  splitTs: boolean;
   onRunQuery: () => void;
   onChange: (value: string) => void;
 }
@@ -18,14 +17,10 @@ export class QueryField extends React.PureComponent<Props> {
     loadAce();
   }
 
-  onChange = (query: string): void => {
+  private onChangeQuery = (query: string): void => {
     if (query && query !== this.props.query) {
       this.props.onChange(query);
     }
-  };
-
-  runQuery = (): void => {
-    this.props.onRunQuery();
   };
 
   render() {
@@ -39,8 +34,8 @@ export class QueryField extends React.PureComponent<Props> {
         <AceEditor
           mode="clickhouse"
           theme={config.theme.isDark ? 'dracula' : 'github'}
-          onChange={this.onChange}
-          onBlur={this.runQuery}
+          onChange={(query: string) => this.onChangeQuery(query)}
+          onBlur={() => this.props.onRunQuery()}
           placeholder="Enter ClickHouse query"
           value={query}
           height={heightPx}

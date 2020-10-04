@@ -1,6 +1,6 @@
 import React, { FormEvent, PureComponent } from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { ClickHouseOptions } from '../model';
+import { ClickHouseOptions } from '../model/model';
 import { InlineFormLabel, Input } from '@grafana/ui';
 
 type State = {
@@ -32,15 +32,20 @@ export class ConfigEditor extends PureComponent<Props> {
     };
   }
 
-  _changeProps = (state: State) => {
-    this.props.options.jsonData.host = state.host || this.props.options.jsonData.host;
-    this.props.options.jsonData.port = state.port || this.props.options.jsonData.port;
-    this.props.options.jsonData.username = state.username || this.props.options.jsonData.username;
-    this.props.options.jsonData.secureJsonData.password =
-      state.password || this.props.options.jsonData.secureJsonData.password;
+  private changeProps = (state: State) => {
+    const options = this.props.options;
+    options.jsonData = {
+      host: state.host || options.jsonData.host,
+      port: state.port || options.jsonData.port,
+      username: state.username || options.jsonData.username,
+      secureJsonData: {
+        password: state.password || options.jsonData.secureJsonData.password,
+      },
+    };
+    this.props.onOptionsChange(options);
   };
 
-  changeOption = (statePart: State) => {
+  private changeOption = (statePart: State) => {
     this.setState((prevState: State) => {
       const state = {
         host: statePart.host || prevState.host,
@@ -49,7 +54,7 @@ export class ConfigEditor extends PureComponent<Props> {
         password: statePart.password || prevState.password,
       };
 
-      this._changeProps(state);
+      this.changeProps(state);
       return state;
     });
   };

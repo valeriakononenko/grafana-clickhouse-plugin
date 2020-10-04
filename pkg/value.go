@@ -5,7 +5,6 @@ import (
   "fmt"
   "github.com/grafana/grafana-plugin-sdk-go/backend"
   "github.com/grafana/grafana-plugin-sdk-go/data"
-  "math"
   "reflect"
   "strconv"
   "strings"
@@ -25,132 +24,95 @@ func ParseTimeZone(tz string) *time.Location {
   }
 }
 
-func parseFloatValue(value interface{}, fieldName string, nullable bool) *Value   {
+func parseFloatValue(value interface{}, fieldName string) *Value   {
   if value != nil {
     fv := reflect.ValueOf(value).Float()
-
-    if nullable {
-	  return NewValue(&fv, fieldName, []*float64{}, fv)
-	} else {
-	  return NewValue(fv, fieldName, []float64{}, fv)
-	}
-  } else if nullable {
-	return NullValue(fieldName, []*float64{})
+    return NewValue(&fv, fieldName, []*float64{})
   }
 
-  return nil
+  return NullValue(fieldName, []*float64{})
 }
 
-func parseStringValue(value interface{}, fieldName string, nullable bool) *Value   {
+func parseStringValue(value interface{}, fieldName string) *Value   {
   if value != nil {
 	str := reflect.ValueOf(value).String()
-
-	if nullable {
-	  return NewValue(&str, fieldName, []*string{}, math.NaN())
-	} else {
-	  return NewValue(str, fieldName, []string{}, math.NaN())
-	}
-  } else if nullable {
-	return NullValue(fieldName, []*string{})
+	return NewValue(&str, fieldName, []*string{})
   }
 
-  return nil
+  return NullValue(fieldName, []*string{})
 }
 
-func parseUInt64Value(value interface{}, fieldName string, nullable bool) *Value  {
+func parseUInt64Value(value interface{}, fieldName string) *Value  {
   if value != nil {
 	ui64v, err := strconv.ParseUint(fmt.Sprintf("%v", value), 10, 64)
 
 	if err == nil {
-	  if nullable {
-		return NewValue(&ui64v, fieldName, []*uint64{}, float64(ui64v))
-	  } else {
-		return NewValue(ui64v, fieldName, []uint64{}, float64(ui64v))
-	  }
+	  return NewValue(&ui64v, fieldName, []*uint64{})
 	}
-  } else if nullable {
-	return NullValue(fieldName, []*uint64{})
   }
 
-  return nil
+  return NullValue(fieldName, []*uint64{})
 }
 
-func parseInt64Value(value interface{}, fieldName string, nullable bool) *Value  {
+func parseInt64Value(value interface{}, fieldName string) *Value  {
   if value != nil {
 	i64v, err := strconv.ParseInt(fmt.Sprintf("%v", value), 10, 64)
 
 	if err == nil {
-	  if nullable {
-		return NewValue(&i64v, fieldName, []*int64{}, float64(i64v))
-	  } else {
-		return NewValue(i64v, fieldName, []int64{}, float64(i64v))
-	  }
+	  return NewValue(&i64v, fieldName, []*int64{})
 	}
-  } else if nullable {
-	return NullValue(fieldName, []*int64{})
   }
 
-  return nil
+  return NullValue(fieldName, []*int64{})
 }
 
-func parseTimeValue(value interface{}, fieldName string, nullable bool, layout string,
-					timezone *time.Location) *Value  {
+func parseTimeValue(value interface{}, fieldName string, layout string, timezone *time.Location) *Value  {
   if value != nil {
 	strValue := fmt.Sprintf("%v", value)
 	t, err := time.ParseInLocation(layout, strValue, timezone)
 
 	if err == nil {
-	  if nullable {
-		return NewValue(&t, fieldName, []*time.Time{}, float64(t.Unix()))
-	  } else {
-		return NewValue(t, fieldName, []time.Time{}, float64(t.Unix()))
-	  }
+	  return NewValue(&t, fieldName, []*time.Time{})
 	} else {
 	  i64v, err := strconv.ParseInt(strValue, 10, 64)
 
 	  if err == nil {
 		timeValue := time.Unix(i64v, i64v)
 
-		if nullable {
-		  return NewValue(&timeValue, fieldName, []*time.Time{}, float64(timeValue.Unix()))
-		} else {
-		  return NewValue(timeValue, fieldName, []time.Time{}, float64(timeValue.Unix()))
-		}
+		return NewValue(&timeValue, fieldName, []*time.Time{})
 	  }
 	}
-  } else if nullable {
-	return NullValue(fieldName, []*time.Time{})
   }
 
-  return nil
+  return NullValue(fieldName, []*time.Time{})
 }
 
-func ParseValue(valueType string, value interface{}, fieldName string, nullable bool, timezone *time.Location) *Value  {
+func ParseValue(valueType string, value interface{}, fieldName string, timezone *time.Location) *Value  {
   if strings.HasPrefix(valueType, "LowCardinality") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"LowCardinality("), ")"),
-	  value, fieldName, nullable, timezone)
+	  value, fieldName, timezone)
   } else if strings.HasPrefix(valueType, "Nullable") {
 	return ParseValue(strings.TrimSuffix(strings.TrimPrefix(valueType,"Nullable("), ")"),
-	  value, fieldName, true, timezone)
+	  value, fieldName, timezone)
   } else {
 	switch valueType {
 	case "UInt8", "UInt16", "UInt32", "Int8", "Int16", "Int32", "Float32", "Float64":
-	  return parseFloatValue(value, fieldName, nullable)
+	  return parseFloatValue(value, fieldName)
 	case "String", "UUID":
-	  return parseStringValue(value, fieldName, nullable)
+	  return parseStringValue(value, fieldName)
 	case "UInt64":
-	  return parseUInt64Value(value, fieldName, nullable)
+	  return parseUInt64Value(value, fieldName)
 	case "Int64":
-	  return parseInt64Value(value, fieldName, nullable)
+	  return parseInt64Value(value, fieldName)
 	default:
 	  if strings.HasPrefix(valueType, "Decimal") {
-		return parseFloatValue(value, fieldName, nullable)
+		return parseFloatValue(value, fieldName)
 	  } else if strings.HasPrefix(valueType, "FixedString") || strings.HasPrefix(valueType, "Enum") {
-		return parseStringValue(value, fieldName, nullable)
+		return parseStringValue(value, fieldName)
 	  } else if strings.HasPrefix(valueType, dateTimePrefix) {
-		return parseTimeValue(value, fieldName, nullable, dateTimeLayout, timezone)
+		return parseTimeValue(value, fieldName, dateTimeLayout, timezone)
 	  } else if strings.HasPrefix(valueType, datePrefix) {
-		return parseTimeValue(value, fieldName, nullable, dateLayout, timezone)
+		return parseTimeValue(value, fieldName, dateLayout, timezone)
 	  } else {
 		backend.Logger.Warn(
 		  fmt.Sprintf("Value [%v] has compound type [%v] and will be returned as string", value, valueType))
@@ -163,30 +125,24 @@ func ParseValue(valueType string, value interface{}, fieldName string, nullable 
 		  return nil
 		}
 
-		return parseStringValue(string(byteValue), fieldName, nullable)
+		return parseStringValue(string(byteValue), fieldName)
 	  }
 	}
   }
 }
 
 func NullValue(fieldName string, fieldValues interface{}) *Value {
-  return &Value{
-	Val: nil,
-	Field: data.NewField(fieldName, nil, fieldValues),
-	Float: math.NaN(),
-  }
+  return NewValue(nil, fieldName, fieldValues)
 }
 
-func NewValue(value interface{}, fieldName string, fieldValues interface{}, floatValue float64) *Value {
+func NewValue(value interface{}, fieldName string, fieldValues interface{}) *Value {
   return &Value{
 	Val: value,
 	Field: data.NewField(fieldName, nil, fieldValues),
-	Float: floatValue,
   }
 }
 
 type Value struct {
   Val interface{}
   Field *data.Field
-  Float float64
 }
