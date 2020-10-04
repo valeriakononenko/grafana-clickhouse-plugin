@@ -17,13 +17,13 @@ export class QueryField extends React.PureComponent<Props> {
     loadAce();
   }
 
-  onChange = (query: string): void => {
+  private onChange = (query: string): void => {
     if (query && query !== this.props.query) {
       this.props.onChange(query);
     }
   };
 
-  runQuery = (): void => {
+  private runQuery = (): void => {
     this.props.onRunQuery();
   };
 

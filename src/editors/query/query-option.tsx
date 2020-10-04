@@ -30,7 +30,7 @@ export class QueryOption extends React.PureComponent<Props, State> {
     this.onSwitch = this.props.onSwitch !== undefined ? this.props.onSwitch : () => {};
   }
 
-  toggle() {
+  private toggle() {
     this.setState((prevState: State) => {
       const isOpen = !prevState.isOpen;
       return {
