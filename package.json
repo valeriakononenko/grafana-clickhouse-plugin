@@ -1,6 +1,6 @@
 {
   "name": "wombyte-clickhouse-datasource",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
     "clean": "rm -rf ./dist ./*.zip ./coverage",
