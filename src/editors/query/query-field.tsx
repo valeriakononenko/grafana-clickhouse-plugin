@@ -7,7 +7,6 @@ import { QueryFieldProps } from '@grafana/ui/components/QueryField/QueryField';
 import { loadAce } from '../ace/loader';
 
 interface Props extends QueryFieldProps {
-  splitTs: boolean;
   onRunQuery: () => void;
   onChange: (value: string) => void;
 }

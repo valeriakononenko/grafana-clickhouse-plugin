@@ -47,7 +47,6 @@ export class QueryEditor extends React.PureComponent<Props> {
             onBlur={() => this.onRunQuery()}
             onChange={(q: string) => this.onChangeQuery(q)}
             onRunQuery={() => this.onRunQuery()}
-            splitTs={this.props.query.splitTs}
             portalOrigin=""
           />
         </div>

@@ -25,18 +25,24 @@ export function buildDataQueryRequest(request: DataQueryRequest<ClickHouseQuery>
 
 export function handleDataQueryResponse(targets: ClickHouseQuery[]): HandleDataQueryResponse {
   return (response: DataQueryResponse) => {
-    const data: DataFrame[] = [];
+    const frames: DataFrame[] = [];
 
     targets.forEach(t => {
-      const frame = response.data.find(d => d.refId === t.refId);
-      if (frame && t.splitTs) {
-        new FrameAccessor(frame).split().forEach(f => data.push(f));
-      } else {
-        data.push(frame);
+      if (!t.hide) {
+        const frame = response.data.find(d => d.refId === t.refId);
+
+        if (frame) {
+          if (t.splitTs) {
+            const fa = new FrameAccessor(frame);
+            (fa.splitByLabel() || fa.splitByValues() || [frame]).forEach(f => frames.push(f));
+          } else {
+            frames.push(frame);
+          }
+        }
       }
     });
 
-    response.data = data;
+    response.data = frames;
     return response;
   };
 }

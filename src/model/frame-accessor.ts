@@ -1,13 +1,60 @@
-import { DataFrame, Field } from '@grafana/data';
+import { DataFrame, Field, FieldType } from '@grafana/data';
 import { Frame } from './frame';
-
-type FramesMap = { [key: string]: Frame };
 
 const SplitFields = {
   TIME: 'time',
   VALUE: 'value',
   LABEL: 'label',
 };
+
+class FramesMap {
+  private readonly frames: { [key: string]: Frame };
+  private readonly refId: string;
+  private readonly timeField: Field | null;
+
+  constructor(refId: string, timeField: Field | null) {
+    this.frames = {};
+    this.refId = refId;
+    this.timeField = timeField;
+  }
+
+  private setFrame(label: string, valueType: FieldType) {
+    const newFrame = new Frame({
+      fields: [],
+      length: 0,
+      refId: this.refId,
+      name: label,
+    });
+
+    if (this.timeField) {
+      newFrame.addField(SplitFields.TIME, this.timeField.type, SplitFields.TIME);
+    }
+
+    newFrame.addField(SplitFields.VALUE, valueType, label);
+    this.frames[label] = newFrame;
+  }
+
+  addValue(label: string, valueField: Field | null, idx: number) {
+    if (this.timeField && valueField) {
+      const time = this.timeField.values?.get(idx);
+      const value = valueField.values?.get(idx);
+
+      if (!this.frames[label]) {
+        this.setFrame(label, valueField.type);
+      }
+
+      const f = this.frames[label];
+      f.add({
+        [SplitFields.TIME]: time,
+        [SplitFields.VALUE]: value,
+      });
+    }
+  }
+
+  getFrames(): Frame[] {
+    return Object.values(this.frames);
+  }
+}
 
 export class FrameAccessor {
   refId: string;
@@ -48,94 +95,39 @@ export class FrameAccessor {
     return null;
   }
 
-  splitByLabel(): Frame[] {
+  splitByLabel(): Frame[] | null {
     if (this.timeField && this.valueField && this.labelField) {
-      const fm: FramesMap = {};
+      const fm: FramesMap = new FramesMap(this.refId, this.timeField);
 
       for (let i = 0; i < this.length; i++) {
-        const time = this.timeField.values?.get(i);
-        const value = this.valueField.values?.get(i);
         const label = this.labelField.values?.get(i);
 
-        if (!fm[label]) {
-          const newFrame = new Frame({
-            fields: [],
-            length: 0,
-            refId: this.refId,
-            name: label,
-          });
-
-          newFrame.addField(SplitFields.TIME, this.timeField.type, SplitFields.TIME);
-          newFrame.addField(SplitFields.VALUE, this.valueField.type, label);
-          fm[label] = newFrame;
+        if (label !== SplitFields.TIME) {
+          fm.addValue(label, this.valueField, i);
         }
-
-        const f = fm[label];
-        f.add({
-          [SplitFields.TIME]: time,
-          [SplitFields.VALUE]: value,
-        });
       }
 
-      return Object.values(fm);
+      return fm.getFrames();
     }
 
-    return [];
+    return null;
   }
 
-  splitByTime(): Frame[] {
+  splitByValues(): DataFrame[] | null {
     if (this.timeField) {
-      const fm: FramesMap = {};
+      const fm: FramesMap = new FramesMap(this.refId, this.timeField);
+      const fields = this.fields.filter(f => f.name !== SplitFields.TIME);
 
       for (let i = 0; i < this.length; i++) {
-        const time = this.timeField.values?.get(i);
-
-        for (let j = 0; j < this.fields.length; j++) {
-          const field = this.fields[j];
-          const name = field.name;
-
-          if (name !== SplitFields.TIME) {
-            if (!fm[name]) {
-              const newFrame = new Frame({
-                fields: [],
-                length: 0,
-                refId: this.refId,
-                name: name,
-              });
-
-              newFrame.addField(SplitFields.TIME, this.timeField.type, SplitFields.TIME);
-              newFrame.addField(SplitFields.VALUE, field.type, name);
-              fm[name] = newFrame;
-            }
-
-            const f = fm[name];
-            f.add({
-              [SplitFields.TIME]: time,
-              [SplitFields.VALUE]: field.values.get(i),
-            });
-          }
+        for (let j = 0; j < fields.length; j++) {
+          const field = fields[j];
+          fm.addValue(field.name, field, i);
         }
       }
 
-      return Object.values(fm);
+      return fm.getFrames();
     }
 
-    return [];
-  }
-
-  split(): DataFrame[] {
-    const byLabel = this.splitByLabel();
-
-    if (byLabel.length > 0) {
-      return byLabel;
-    } else {
-      const byTime = this.splitByTime();
-
-      if (byTime.length > 0) {
-        return byTime;
-      }
-    }
-
-    return [this.frame];
+    return null;
   }
 }
