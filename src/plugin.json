@@ -1,7 +1,7 @@
 {
   "type": "datasource",
-  "name": "ClickHouse",
-  "id": "wombyte-clickhouse-datasource",
+  "name": "Yandex ClickHouse",
+  "id": "vkononenko-clickhouse-datasource",
 
   "metrics": true,
   "annotations": true,

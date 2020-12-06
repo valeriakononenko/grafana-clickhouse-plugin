@@ -1,1 +1,82 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="54" height="48" viewBox="0 0 9 8"><style>.o{fill:#fc0}.r{fill:red}</style><path d="M0,7 h1 v1 h-1 z" class="r"/><path d="M0,0 h1 v7 h-1 z" class="o"/><path d="M2,0 h1 v8 h-1 z" class="o"/><path d="M4,0 h1 v8 h-1 z" class="o"/><path d="M6,0 h1 v8 h-1 z" class="o"/><path d="M8,3.25 h1 v1.5 h-1 z" class="o"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="54"
+   height="48"
+   viewBox="0 0 9 8"
+   version="1.1"
+   id="svg98"
+   sodipodi:docname="logo.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
+  <metadata
+     id="metadata104">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs102" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     id="namedview100"
+     showgrid="false"
+     inkscape:zoom="17.1875"
+     inkscape:cx="27"
+     inkscape:cy="24"
+     inkscape:window-x="72"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg98" />
+  <style
+     id="style84">.o{fill:#fc0}.r{fill:red}</style>
+  <path
+     d="M0,7 h1 v1 h-1 z"
+     class="r"
+     id="path86"
+     style="fill:#ffff00" />
+  <path
+     d="M0,0 h1 v7 h-1 z"
+     class="o"
+     id="path88"
+     style="fill:#ff0000" />
+  <path
+     d="M2,0 h1 v8 h-1 z"
+     class="o"
+     id="path90"
+     style="fill:#ff0000" />
+  <path
+     d="M4,0 h1 v8 h-1 z"
+     class="o"
+     id="path92"
+     style="fill:#ff0000" />
+  <path
+     d="M6,0 h1 v8 h-1 z"
+     class="o"
+     id="path94"
+     style="fill:#ff0000" />
+  <path
+     d="M8,3.25 h1 v1.5 h-1 z"
+     class="o"
+     id="path96"
+     style="fill:#ff0000" />
+</svg>

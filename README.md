@@ -1,33 +1,23 @@
 # Grafana ClickHouse Data Source Plugin
 
-Supports alerting
+Supports
+* alerting
+* annotations
+* mustache templating
 
-## Getting started
+Allows
+* to write queries as is, not restricting columns and their types 
+* to use variables
 
-1. Install dependencies
 
-    ```BASH
-    npm i
-    ```
-2. Build plugin in development
+#### Datasource configuration
+![alt text](./img/config.png "Configuration")
 
-    ```BASH
-    npm run dev && npm run go
-    ```
-3. Build plugin in production mode
+#### Query preview
+![alt text](./img/query-gen.png "Preview")
 
-    ```BASH
-    npm run clean && npm run build && npm run go
-    ```
-4. Install plugin
+#### Splitting data by label
+![alt text](./img/split.png "Split")
 
-    ```BASH
-    npm run install
-    ```
-   
-5. Use unsigned
-    ```
-    sudo sed -i "s/;allow_loading_unsigned_plugins/allow_loading_unsigned_plugins/" /etc/grafana/grafana.ini
-    sudo sed -c -i "s/\(allow_loading_unsigned_plugins *= *\).*/\1wombyte-clickhouse-datasource/" /etc/grafana/grafana.ini
-    sudo systemctl restart grafana-server.service 
-    ```
+#### Variables
+![alt text](./img/variables.png "Variables")

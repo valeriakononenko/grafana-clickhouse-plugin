@@ -1,5 +1,5 @@
 {
-  "name": "wombyte-clickhouse-datasource",
+  "name": "vkononenko-clickhouse-datasource",
   "version": "1.1.0",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
@@ -25,12 +25,14 @@
     "@grafana/data": "^7.1.5",
     "@grafana/runtime": "^7.1.5",
     "@grafana/toolkit": "^7.1.5",
-    "@grafana/ui": "^7.1.5"
+    "@grafana/ui": "^7.1.5",
+    "@types/mustache": "^4.0.1"
   },
   "engines": {
     "node": ">=12 <13"
   },
   "dependencies": {
+    "@types/mustache": "^4.0.1",
     "ace-builds": "^1.4.11",
     "mustache": "^4.0.1",
     "react-ace": "^9.0.0"
