@@ -1,11 +1,11 @@
 # Grafana ClickHouse Data Source Plugin
 
-###Supports
+### Supports
 * alerting
 * annotations
 * mustache templating
 
-###Allows
+### Allows
 * to write queries as is, not restricting columns and their types 
 * to use variables
 
