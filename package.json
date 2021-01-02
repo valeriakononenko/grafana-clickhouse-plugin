@@ -1,5 +1,5 @@
 {
-  "name": "vkononenko-clickhouse-datasource",
+  "name": "divergence082-clickhouse-datasource",
   "version": "1.1.0",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {

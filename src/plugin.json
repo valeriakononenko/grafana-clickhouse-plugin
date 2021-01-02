@@ -1,7 +1,7 @@
 {
   "type": "datasource",
   "name": "Yandex ClickHouse",
-  "id": "vkononenko-clickhouse-datasource",
+  "id": "divergence082-clickhouse-datasource",
 
   "metrics": true,
   "annotations": true,
