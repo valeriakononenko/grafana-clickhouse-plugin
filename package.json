@@ -1,6 +1,6 @@
 {
   "name": "divergence082-clickhouse-datasource",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
     "clean": "rm -rf ./dist ./*.zip ./coverage",
@@ -13,28 +13,28 @@
     "go-win": "GOOS=windows GOARCH=amd64 go build -i -o ./dist/plugin_windows_amd64 ./pkg",
     "go-drw": "GOOS=darwin GOARCH=amd64 go build -i -o ./dist/plugin_darwin_amd64 ./pkg",
     "go": "npm run go-vendor && npm run go-lnx && npm run go-win && npm run go-drw",
-    "zip": "zip -r wombyte-clickhouse-datasource.zip ./dist",
+    "zip": "zip -r divergence082-clickhouse-datasource.zip ./dist",
     "grafana-stop": "sudo systemctl stop grafana-server.service",
     "grafana-start": "sudo systemctl start grafana-server.service",
-    "grafana-install-plugin": "sudo grafana-cli --pluginUrl=./wombyte-clickhouse-datasource.zip plugins install wombyte-clickhouse-datasource ",
+    "grafana-install-plugin": "sudo grafana-cli --pluginUrl=./divergence082-clickhouse-datasource.zip plugins install divergence082-clickhouse-datasource ",
     "load": "npm run grafana-stop && npm run zip && npm run grafana-install-plugin && npm run grafana-start"
   },
   "author": "Valeria Kononenko",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "^7.1.5",
-    "@grafana/runtime": "^7.1.5",
-    "@grafana/toolkit": "^7.1.5",
-    "@grafana/ui": "^7.1.5",
-    "@types/mustache": "^4.0.1"
+    "@grafana/data": "7.3.6",
+    "@grafana/runtime": "7.3.6",
+    "@grafana/toolkit": "7.3.6",
+    "@grafana/ui": "7.3.6",
+    "@types/mustache": "4.0.1"
   },
   "engines": {
-    "node": ">=12 <13"
+    "node": ">=12"
   },
   "dependencies": {
-    "@types/mustache": "^4.0.1",
-    "ace-builds": "^1.4.11",
-    "mustache": "^4.0.1",
-    "react-ace": "^9.0.0"
+    "@types/mustache": "4.0.1",
+    "mustache": "4.0.1",
+    "ace-builds": "1.4.12",
+    "react-ace": "9.2.1"
   }
 }
