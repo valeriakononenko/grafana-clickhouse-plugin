@@ -1,32 +1,20 @@
 
 ## Getting started
 
-1. Install dependencies
-
-    ```BASH
-    npm i
+1. If you want to build this project from scratch, just run
     ```
-2. Build plugin in development
-
-    ```BASH
-    npm run dev && npm run go
+    npm run pack
     ```
-3. Build plugin in production mode
 
-    ```BASH
-    npm run clean && npm run build && npm run go
+2. If you want to run plugin
     ```
-4. Install plugin
-
-    ```BASH
     npm run load
     ```
-   
-5. Use unsigned
+
+3. The following step could be run instead of two previous. 
+Then you will have fully installed plugin on active grafana-server
     ```
-    sudo sed -i "s/;allow_loading_unsigned_plugins/allow_loading_unsigned_plugins/" /etc/grafana/grafana.ini
-    sudo sed -c -i "s/\(allow_loading_unsigned_plugins *= *\).*/\1divergence082-clickhouse-datasource/" /etc/grafana/grafana.ini
-    sudo systemctl restart grafana-server.service 
+    npm run start
     ```
 
 ---

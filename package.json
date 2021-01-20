@@ -1,6 +1,6 @@
 {
   "name": "divergence082-clickhouse-datasource",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
     "clean": "rm -rf ./dist ./*.zip ./coverage",
@@ -8,16 +8,20 @@
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
     "sign": "grafana-toolkit plugin:sign --signatureType community",
+    "mnfst": "cp MANIFEST.txt ./dist/MANIFEST.txt",
     "go-vendor": "GO111MODULE=on go mod vendor",
     "go-lnx": "GOOS=linux GOARCH=amd64 go build -i -o ./dist/plugin_linux_amd64 ./pkg",
     "go-win": "GOOS=windows GOARCH=amd64 go build -i -o ./dist/plugin_windows_amd64 ./pkg",
     "go-drw": "GOOS=darwin GOARCH=amd64 go build -i -o ./dist/plugin_darwin_amd64 ./pkg",
     "go": "npm run go-vendor && npm run go-lnx && npm run go-win && npm run go-drw",
+    "dist": "rm -rf node_modules && npm i && npm run clean && npm run dev && npm run go && npm run mnfst",
     "zip": "zip -r divergence082-clickhouse-datasource.zip ./dist",
+    "pack": "npm run dist && npm run zip",
     "grafana-stop": "sudo systemctl stop grafana-server.service",
     "grafana-start": "sudo systemctl start grafana-server.service",
     "grafana-install-plugin": "sudo grafana-cli --pluginUrl=./divergence082-clickhouse-datasource.zip plugins install divergence082-clickhouse-datasource ",
-    "load": "npm run grafana-stop && npm run zip && npm run grafana-install-plugin && npm run grafana-start"
+    "load": "npm run grafana-stop && npm run grafana-install-plugin && npm run grafana-start",
+    "start": "npm run pack && npm run load"
   },
   "author": "Valeria Kononenko",
   "license": "Apache-2.0",
