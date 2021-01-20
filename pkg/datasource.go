@@ -1,11 +1,11 @@
 package main
 
 import (
-  "github.com/grafana/grafana-plugin-sdk-go/backend"
-  "github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
-  "github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
-  "github.com/grafana/grafana-plugin-sdk-go/data"
-  "golang.org/x/net/context"
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"golang.org/x/net/context"
 )
 
 func GetDatasourceServeOpts() datasource.ServeOpts {
@@ -19,13 +19,13 @@ func GetDatasourceServeOpts() datasource.ServeOpts {
 	}
 }
 
-
 type ClickHouseDatasource struct {
 	im instancemgmt.InstanceManager
 }
 
-func (ds *ClickHouseDatasource) getClient(ctx backend.PluginContext) (*ClickHouseClient, error)  {
-	im, err := ds.im.Get(ctx); if err != nil {
+func (ds *ClickHouseDatasource) getClient(ctx backend.PluginContext) (*ClickHouseClient, error) {
+	im, err := ds.im.Get(ctx)
+	if err != nil {
 		return nil, err
 	}
 
@@ -34,15 +34,21 @@ func (ds *ClickHouseDatasource) getClient(ctx backend.PluginContext) (*ClickHous
 	}, nil
 }
 
-func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) backend.DataResponse  {
+func (ds *ClickHouseDatasource) query(ctx backend.PluginContext, query *Query) backend.DataResponse {
 
 	onErr := func(err error) backend.DataResponse {
 		backend.Logger.Error("Datasource query error: " + err.Error())
 		return backend.DataResponse{Error: err}
 	}
 
-	client, err := ds.getClient(ctx); if err != nil { return onErr(err) }
-	res, err := client.Query(query.Format()); if err != nil { return onErr(err) }
+	client, err := ds.getClient(ctx)
+	if err != nil {
+		return onErr(err)
+	}
+	res, err := client.Query(query.Format())
+	if err != nil {
+		return onErr(err)
+	}
 	frame := res.toFrame(query.RefId, client.FetchTimeZone)
 	response := backend.DataResponse{}
 
@@ -66,7 +72,10 @@ func (ds *ClickHouseDatasource) QueryData(
 
 	for _, query := range req.Queries {
 		var q = Query{}
-		err := parseJson(query.JSON, &q); if err != nil { return onErr(err) }
+		err := parseJson(query.JSON, &q)
+		if err != nil {
+			return onErr(err)
+		}
 
 		response.Responses[q.RefId] = ds.query(req.PluginContext, &q)
 	}
@@ -86,10 +95,12 @@ func (ds *ClickHouseDatasource) CheckHealth(
 		}, err
 	}
 
-	client, err := ds.getClient(req.PluginContext); if err != nil {
+	client, err := ds.getClient(req.PluginContext)
+	if err != nil {
 		return onErr(err)
 	}
-	_, err = client.Query(DefaultQuery); if err != nil {
+	_, err = client.Query(DefaultQuery)
+	if err != nil {
 		return onErr(err)
 	}
 

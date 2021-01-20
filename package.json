@@ -3,7 +3,7 @@
   "version": "2.0.1",
   "description": "Clickhouse plugin for Grafana",
   "scripts": {
-    "clean": "rm -rf ./dist ./*.zip ./coverage",
+    "clean": "rm -rf ./dist ./*.zip ./coverage ./vendor",
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",

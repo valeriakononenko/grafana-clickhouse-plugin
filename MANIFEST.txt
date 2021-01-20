@@ -8,17 +8,17 @@ Hash: SHA512
   "signedByOrg": "divergence082",
   "signedByOrgName": "vkononenko",
   "plugin": "divergence082-clickhouse-datasource",
-  "version": "1.1.0",
-  "time": 1611137651183,
+  "version": "2.0.1",
+  "time": 1611141211015,
   "keyId": "7e4d0c6a708866e7",
   "files": {
-    "CHANGELOG.md": "f033ab83b2612b24048c9cfc3a85625daa0d1e12ca013283774446a8d7dae7e6",
+    "CHANGELOG.md": "d9f188032e916d7546d19cf997efdd3bea0fc707ca86bea0c9adf690eb315565",
     "module.js": "6282f75c364a1dfe8808c54c6a312b768695ef7e30b1941a7184b9c8aa7b5fbd",
-    "plugin_linux_amd64": "94906c67d34e45a0e3b8813ea94f3f9427e47ff18f295ec400af32f03fc6585e",
+    "plugin_linux_amd64": "8e61f60934ddc95fdcb687898e63e32f8b0f88b7aa8b6d40706d305757c26bd7",
     "module.js.map": "03876d7d723ed15688bc1f6fbb210e23af4d7321c4d3eb409623a7c55c4e0316",
-    "plugin.json": "68aa8aa9e37106cac474485b64ffac065cb842241578bd848370772b858a5eb8",
-    "plugin_darwin_amd64": "4b793158d00ab7f12e1fe1548361c6c813ae1d38acf96e47c24f74b23548a9b7",
-    "plugin_windows_amd64": "787257a783da90c26aabac21dec74cc55d0be806fc623116969cf9d979a676cf",
+    "plugin.json": "15773547f88bbf5ced0637423b34f9367c6a751db6cd52b20c7311c02d41497b",
+    "plugin_darwin_amd64": "05a4a531585c5ccd16eea7daff931157c119f7943226bfb96de7dd81576a2e3c",
+    "plugin_windows_amd64": "fa7d753903821f76d63dc091112678411b829951c78c444dbf36f382411c36c1",
     "LICENSE": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
     "partials/annotations-editor.html": "c84895d3b0b764be754db89047ffaae7807a27c335ae1f770c58bf9c5e32690e",
     "README.md": "20830a95b50e5c1433187c3dd44de6eac87f19a9923ffea7ddefefda9dba37f1",
@@ -29,9 +29,9 @@ Hash: SHA512
 Version: OpenPGP.js v4.10.1
 Comment: https://openpgpjs.org
 
-wqIEARMKAAYFAmAIAnMACgkQfk0ManCIZucu1QIJAa2s5LqlPrI5isiajazY
-gI4+jV4QhqQHqGsaOjTH8cfaCHDDOmz/fywhELyl+AxfYOvfmtQdQa9bhvQH
-DqUDAo8mAgkBaGcgI170/w2vraJ7spb/T6okS47Kzb3TcT2YFIfv01DfFEmO
-nXBdwHFBv13Z3gpyuw9iSSho7qFf+8dKrJmFW14=
-=htMF
+wqAEARMKAAYFAmAIEFsACgkQfk0ManCIZufBAAIHXHVgbPrgQfwfC4NC2RWU
+j2cl6kKbNAMe9AJi9XteHZ0DGZdW2hLOJL7XPOJPdTUge+dOneaPcRohEXEf
+C/kB1+ECCObmBptGp0kb9tNkLIjawBbxpJWGh87mjm4bfmQH6OVXaZ0nsUi0
+jmTT3df+QlLxpr/uc37XCWODcjFh5sjrydQ/
+=NVAA
 -----END PGP SIGNATURE-----

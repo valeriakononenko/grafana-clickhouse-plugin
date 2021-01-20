@@ -11,7 +11,8 @@ import (
 )
 
 func parseJson(jsonData []byte, res interface{}) error {
-	err := json.Unmarshal(jsonData, &res); if err != nil {
+	err := json.Unmarshal(jsonData, &res)
+	if err != nil {
 		return errors.New(fmt.Sprintf("Unable to parse json %s. Error: %v", jsonData, err))
 	} else {
 		return nil
